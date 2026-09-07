@@ -8,3 +8,4 @@ https://github.com/NVIDIA/dgx-spark-playbooks/tree/347390338d67262394710802d92b4
 https://github.com/vllm-project/vllm/tree/8f8cc414d1c7648aad8808ba94e7c7fb1b6a72c2
 https://github.com/vllm-project/vllm/tree/402ad45492fe95b5d43d5369c3f156fa6efd5a16
 https://github.com/BerriAI/litellm/tree/10f4033437df30b91b5dbf2b64711d0a8683fc52
+https://github.com/uwoobeat/dgx-spark-research/tree/00083298bfa21694b14abd482640404c890b75df
