@@ -1,0 +1,10 @@
+https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731/tree/7872f01b1d1fe23eabc4c98b48bffcef5a386062
+https://huggingface.co/RedHatAI/GLM-5.3-Flash-NVFP4/tree/36c184c6cda000a481711306df5adde42f63321a
+https://huggingface.co/incoai/GLM-5.3-Flash-DFlash2/tree/bf582e4eacc1810f76656d1811693ff6c6737d2a
+https://github.com/eugr/spark-vllm-docker/tree/e9cf3596c4d8ecd677056b1d14eb5dda16c1f86e
+https://github.com/local-inference-lab/vllm/tree/b5f995e73e6b7fe27c9927477e277a151ebcc9e9
+https://github.com/tonyd2wild/GLM-5.3-Flash-NVFP4-DFlash2-2x-DGX-Spark/tree/050081dc41ce6edd4d3f15fa19dc3410ba4210e3
+https://github.com/NVIDIA/dgx-spark-playbooks/tree/347390338d67262394710802d92b4e48bfc6001c
+https://github.com/vllm-project/vllm/tree/8f8cc414d1c7648aad8808ba94e7c7fb1b6a72c2
+https://github.com/vllm-project/vllm/tree/402ad45492fe95b5d43d5369c3f156fa6efd5a16
+https://github.com/BerriAI/litellm/tree/10f4033437df30b91b5dbf2b64711d0a8683fc52

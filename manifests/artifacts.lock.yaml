@@ -1,0 +1,201 @@
+schema_version: 2
+as_of: "2026-09-03T00:00:00+09:00"
+models:
+  - id: ds4f-base
+    repo: deepseek-ai/DeepSeek-V4-Flash-0731
+    revision: 7872f01b1d1fe23eabc4c98b48bffcef5a386062
+    license_metadata: mit
+    total_bytes: 166898661074
+    file_count: 74
+    max_file_bytes: 3692775244
+    files_over_5gb_decimal: 0
+    role: required
+    import_route: separate-model-application
+    quarantine_registration: false
+  - id: glm53-redhat-nvfp4
+    repo: RedHatAI/GLM-5.3-Flash-NVFP4
+    revision: 36c184c6cda000a481711306df5adde42f63321a
+    license_metadata: not-declared
+    license_declared: NOASSERTION
+    license_concluded: MIT
+    license_conclusion_date: "2026-09-03"
+    license_conclusion_basis: upstream-zai-org-glm-5.3-flash-mit-and-user-decision
+    license_obligations:
+      - preserve-upstream-license-and-copyright-notice
+    total_bytes: 197881157135
+    file_count: 21
+    max_file_bytes: 20002894272
+    files_over_5gb_decimal: 11
+    role: required
+    import_route: separate-model-application
+    quarantine_registration: false
+  - id: glm53-liberta-nvfp4
+    repo: LibertAIDAI/GLM-5.3-Flash-NVFP4
+    revision: caca4e6a4ebbd66f159d3d2fc256683fd6e27177
+    license_metadata: mit
+    total_bytes: 194701812547
+    file_count: 131
+    max_file_bytes: 4164445852
+    files_over_5gb_decimal: 0
+    role: diagnostic-fallback-only
+    import_route: separate-model-application-if-approved
+    quarantine_registration: false
+  - id: glm53-dflash2-draft
+    repo: incoai/GLM-5.3-Flash-DFlash2
+    revision: bf582e4eacc1810f76656d1811693ff6c6737d2a
+    license_metadata: cc-by-nc-nd-4.0
+    license_use_decision: noncommercial-use-confirmed-by-user-2026-09-03
+    license_obligations:
+      - attribution
+      - noncommercial-only
+      - no-distribution-of-adapted-material
+      - preserve-license-copy
+    total_bytes: 2342460697
+    file_count: 5
+    max_file_bytes: 2342169800
+    files_over_5gb_decimal: 0
+    source_inventory_sha256: 43ae798ddecaddbb12f348ef2ab3a4267c82d6109be6b4f296dd54b8b09116ae
+    role: required
+    import_route: separate-model-application
+    quarantine_registration: false
+images:
+  - id: ds4f-base-vllm
+    ref: docker.io/eugr/spark-vllm-b12x@sha256:7dc02f162929943ba2e14514066ed2a04bb7e9ed3592d4eb460ebcbb1f8376bd
+    source_tag: eugr/spark-vllm-b12x:nightly-20260823
+    os: linux
+    architecture: arm64
+    config_digest: sha256:f89e9baedf38ffe3165641d4a937b59b227bbbd58d0116a7518c53b97d601823
+    license_review: MIT wrapper plus Apache-2.0 vLLM and third-party SBOM
+    compressed_layer_bytes: 11313467484
+    role: required
+    import_route: quarantine-oci
+    quarantine_registration: true
+  - id: glm53-vllm-sm121
+    ref: ghcr.io/tonyd2wild/vllm-glm53-flash@sha256:d77d375c742fc54f436dec5108b440f58f021bc6600052bf0e8fe5840357e78f
+    source_tag: ghcr.io/tonyd2wild/vllm-glm53-flash:sm121-v8
+    os: linux
+    architecture: arm64
+    config_digest: sha256:08e3703a018ecac5150c1c756d92711e10af808a5c2bb9377088ff9db43967f2
+    license_review: NOASSERTION for wrapper repository; Apache-2.0 vLLM base
+    compressed_layer_bytes: 14180175179
+    role: required-rollback
+    import_route: quarantine-oci
+    quarantine_registration: true
+  - id: glm53-vllm-official-day0
+    ref: docker.io/vllm/vllm-openai@sha256:905c02933be6021301db2dc284e24e3727467aa3a0f63b41d609885778a07bce
+    source_tag: vllm/vllm-openai:glm53-flash-arm64-cu130
+    os: linux
+    architecture: arm64
+    config_digest: sha256:d42649063a2b05810bce6e1462918475b4ae6e44ad56033735f7118d5c16f136
+    license_review: Apache-2.0 vLLM plus third-party SBOM
+    compressed_layer_bytes: 9710629881
+    role: conditional
+    import_route: quarantine-oci-conditional
+    quarantine_registration: true
+  - id: glm53-vllm-dflash2
+    ref: ghcr.io/tonyd2wild/vllm-glm53-flash@sha256:4def0ef644cb2e9814136dcffd5e385e21bc594f48f3b292234051904abe85a6
+    source_tag: ghcr.io/tonyd2wild/vllm-glm53-flash:sm121-v11-dflash2
+    os: linux
+    architecture: arm64
+    config_digest: sha256:35c6f70ffcba62fd67d7b9d4b4e8300ad177201792ce9cdb1ea18fd449bc23b6
+    license_review: NOASSERTION for wrapper repository; Apache-2.0 vLLM base
+    compressed_layer_bytes: 14204524092
+    role: required
+    import_route: quarantine-oci
+    quarantine_registration: true
+  - id: litellm
+    ref: ghcr.io/berriai/litellm@sha256:2d0f10790c6d9a72f240465ebe755987c40bdd0795cba9f57cbebc7ddc6e5c6f
+    source_index_digest: sha256:a53a7d3ffebede1925bd3ee8a21e4a7b9b63e2e68ec883af136edcccb6eeb82c
+    source_tag: ghcr.io/berriai/litellm:v1.99.1
+    os: linux
+    architecture: arm64
+    config_digest: sha256:69dff3ddc51c4cf4f799d1ddddaca304bf94cfe0f3b357d596de0670baa3b3d1
+    license_review: MIT outside enterprise directory; enterprise content separately licensed; inspect image SBOM
+    compressed_layer_bytes: 385624109
+    role: required
+    import_route: quarantine-oci
+    quarantine_registration: true
+sources:
+  - repo: https://github.com/eugr/spark-vllm-docker.git
+    commit: e9cf3596c4d8ecd677056b1d14eb5dda16c1f86e
+    license: MIT
+    import_route: separate-external-repository-reference-submission
+    quarantine_registration: false
+  - repo: https://github.com/local-inference-lab/vllm.git
+    branch: dev/infernal-invocation
+    commit: b5f995e73e6b7fe27c9927477e277a151ebcc9e9
+    license: Apache-2.0
+    role: eugr-b12x-source-no-glm53-at-pin
+    import_route: separate-external-repository-reference-submission
+    quarantine_registration: false
+  - repo: https://github.com/tonyd2wild/GLM-5.3-Flash-NVFP4-DFlash2-2x-DGX-Spark.git
+    commit: 050081dc41ce6edd4d3f15fa19dc3410ba4210e3
+    license: NOASSERTION
+    import_route: separate-external-repository-reference-submission
+    quarantine_registration: false
+  - repo: https://github.com/NVIDIA/dgx-spark-playbooks.git
+    commit: 347390338d67262394710802d92b4e48bfc6001c
+    license: Apache-2.0-with-third-party-notices
+    import_route: separate-external-repository-reference-submission
+    quarantine_registration: false
+source_files:
+  - repo_commit: e9cf3596c4d8ecd677056b1d14eb5dda16c1f86e
+    path: run-recipe.sh
+    bytes: 1231
+    sha256: 8030c0e0c61cfaa6e85eeeba6bb56ab54cbfbce75a895f7abafb1b43c019cb39
+    license: MIT
+    role: required-eugr-entrypoint
+    import_route: quarantine-raw
+    quarantine_registration: true
+  - repo_commit: e9cf3596c4d8ecd677056b1d14eb5dda16c1f86e
+    path: run-recipe.py
+    bytes: 55292
+    sha256: a1b54bc1da904cd215605f7e9576c541b159f9ccb8cdd3721162c5ef8dfd7a64
+    license: MIT
+    role: required-eugr-recipe-parser
+    import_route: quarantine-raw
+    quarantine_registration: true
+  - repo_commit: e9cf3596c4d8ecd677056b1d14eb5dda16c1f86e
+    path: launch-cluster.sh
+    bytes: 59296
+    sha256: 9654683812b8b67273e17502d0eaae5613146b4556e731a1740a5241787e5cca
+    license: MIT
+    role: required-eugr-tp2-launcher
+    import_route: quarantine-raw
+    quarantine_registration: true
+  - repo_commit: e9cf3596c4d8ecd677056b1d14eb5dda16c1f86e
+    path: autodiscover.sh
+    bytes: 15167
+    sha256: 9d3af8ede40b595c57d314772c288b5fd0cca5d191f40e563e28916a9a02b38b
+    license: MIT
+    role: required-eugr-peer-discovery
+    import_route: quarantine-raw
+    quarantine_registration: true
+  - repo_commit: 050081dc41ce6edd4d3f15fa19dc3410ba4210e3
+    path: docker/sparse_attn_indexer_kpool_sm121.py
+    bytes: 46355
+    sha256: 8a3ecfb0bab2441dd7417ed00a10d142191496149f88e5fe79fcfaea4b160980
+    license: Apache-2.0-file-header
+    role: required-glm-long-context-top-k-patch
+    import_route: quarantine-raw
+    quarantine_registration: true
+open_prs:
+  - url: https://github.com/vllm-project/vllm/pull/53906
+    head: 8f8cc414d1c7648aad8808ba94e7c7fb1b6a72c2
+    state: open
+  - url: https://github.com/vllm-project/vllm/pull/53055
+    head: 402ad45492fe95b5d43d5369c3f156fa6efd5a16
+    state: open
+host_wheels:
+  - id: pyyaml-eugr-parser
+    version: 6.0.3
+    filename: pyyaml-6.0.3-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl
+    url: https://files.pythonhosted.org/packages/ed/23/7a778b6bd0b9a8039df8b1b1d80e2e2ad78aa04171592c8a5c43a56a6af4/pyyaml-6.0.3-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl
+    bytes: 775116
+    sha256: 9149cad251584d5fb4981be1ecde53a1ca46c891a79788c0df828d2f166bda28
+    architecture: arm64
+    python_abi: cp312
+    license: MIT
+    role: required-for-eugr-recipe-parser
+    import_route: quarantine-raw
+    quarantine_registration: true

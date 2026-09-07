@@ -1,0 +1,18 @@
+model_list:
+  - model_name: ds4f-base
+    litellm_params:
+      model: hosted_vllm/ds4f-base
+      api_base: http://127.0.0.1:8000/v1
+      api_key: none
+  - model_name: glm53-nvfp4
+    litellm_params:
+      model: hosted_vllm/glm-5.3-flash
+      api_base: http://127.0.0.1:8000/v1
+      api_key: none
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY
+
+litellm_settings:
+  request_timeout: 3600
+  set_verbose: false

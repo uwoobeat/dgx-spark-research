@@ -1,0 +1,6 @@
+path	bytes	upstream_lfs_sha256	over_5gb_decimal	url
+.gitattributes	116		no	https://huggingface.co/incoai/GLM-5.3-Flash-DFlash2/resolve/bf582e4eacc1810f76656d1811693ff6c6737d2a/.gitattributes?download=true
+README.md	2619		no	https://huggingface.co/incoai/GLM-5.3-Flash-DFlash2/resolve/bf582e4eacc1810f76656d1811693ff6c6737d2a/README.md?download=true
+assets/dflash2-figure.png	286889	6d8dcc9a9472bddb644c881fe83050b5343d09bf5ffb0912e5598e55fe671e99	no	https://huggingface.co/incoai/GLM-5.3-Flash-DFlash2/resolve/bf582e4eacc1810f76656d1811693ff6c6737d2a/assets/dflash2-figure.png?download=true
+config.json	1273		no	https://huggingface.co/incoai/GLM-5.3-Flash-DFlash2/resolve/bf582e4eacc1810f76656d1811693ff6c6737d2a/config.json?download=true
+model.safetensors	2342169800	b038e1d9d1e7833fa3880c2c0135ba9b673013f03da1b29fb831931584759dac	no	https://huggingface.co/incoai/GLM-5.3-Flash-DFlash2/resolve/bf582e4eacc1810f76656d1811693ff6c6737d2a/model.safetensors?download=true
