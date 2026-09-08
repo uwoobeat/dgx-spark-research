@@ -4,7 +4,7 @@
 
 ## 원칙
 
-인터넷 연결 staging 영역과 폐쇄망 설치 영역을 혼합하지 않는다. 인터넷에서 임의로 받은 파일을 매체에 직접 복사하지 않는다. 기존 성공 OCI·개별 코드는 기존 회차에 유지하고, 외부·자체 repository는 소스코드 전용 회차, 모델 3개·대형 GLM OCI 2개는 수동 반입으로 구분한다. 모든 URL은 branch `main`이 아니라 revision/digest에 고정한다.
+인터넷 연결 staging 영역과 폐쇄망 설치 영역을 혼합하지 않는다. 인터넷에서 임의로 받은 파일을 매체에 직접 복사하지 않는다. OCI 2개·개별 코드 6개는 새 런타임 회차에서 재수집하고, 외부·자체 repository는 소스코드 전용 회차, 모델 3개·대형 GLM OCI 2개는 수동 반입으로 구분한다. 모든 URL은 branch `main`이 아니라 revision/digest에 고정한다.
 
 ```text
 upstream registry/raw.githubusercontent/PyPI -> digest·license manifest
@@ -101,7 +101,7 @@ DS4F, GLM target, DFlash2 drafter 세 모델은 크기와 무관하게 포털에
 - 대형 OCI 수동 반입: `manifests/manual-oci-import.txt`
 - repository 소스코드 전용 회차: `manifests/quarantine-repository-sources.tsv`
 
-최초 신청 정본은 계속 OCI 4개다. 처리 결과가 일부 성공했다고 `quarantine-oci-required.txt`에서 실패 항목을 삭제하지 않는다. 성공한 eugr·LiteLLM image는 기존 payload를 그대로 유지하고, 두 GLM image는 수동 반입 목록으로 분리하고 포털 재시도 회차를 만들지 않는다. 성공 OCI에 검역 이상이 있으면 보안 조치·예외 승인 전에는 매체 기록을 완료하지 않는다.
+최초 신청 정본은 계속 OCI 4개다. 처리 결과가 일부 성공했다고 `quarantine-oci-required.txt`에서 실패 항목을 삭제하지 않는다. 성공 이력이 있는 eugr·LiteLLM image도 새 런타임 회차에서 재수집하고, 두 GLM image는 수동 반입 목록으로 분리하고 포털 재시도 회차를 만들지 않는다. 성공 OCI에 검역 이상이 있으면 보안 조치·예외 승인 전에는 매체 기록을 완료하지 않는다.
 
 검증할 항목:
 

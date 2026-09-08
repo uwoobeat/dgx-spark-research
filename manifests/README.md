@@ -4,11 +4,11 @@
 
 검역 포털 입력·현행 범위는 다음과 같다. 모델 snapshot은 크기와 무관하게 모두 제외한다. GitHub repository archive는 기존 이미지·코드 회차와 분리된 소스코드 전용 회차로 신청한다.
 
-최초 포털 입력 이력은 OCI 4개와 RAW 6개, 합계 10건이다. 현행 구성은 기존 성공분(OCI 2 + RAW 6) 유지와 소스코드 전용 회차 8건이다. 제출 전후에 `DOCKER linux/arm64` + `RAW raw-any`가 명시적으로 기록되고 Docker architecture가 기본값으로 대체되지 않았는지 확인한다. 실제 회차 식별자·시각·상태와 처리 이력은 Git에서 제외된 비공개 실행 기록에 보존한다.
+최초 포털 입력 이력은 OCI 4개와 RAW 6개, 합계 10건이다. 현행 구성은 새 런타임 회차(OCI 2 + RAW 6) 재수집와 소스코드 전용 회차 8건이다. 제출 전후에 `DOCKER linux/arm64` + `RAW raw-any`가 명시적으로 기록되고 Docker architecture가 기본값으로 대체되지 않았는지 확인한다. 실제 회차 식별자·시각·상태와 처리 이력은 Git에서 제외된 비공개 실행 기록에 보존한다.
 
 - `quarantine-oci-required.txt`: 최소 운영 OCI image digest 목록
 - `quarantine-oci-conditional.txt`: official GLM 비교 image 목록
-- `quarantine-oci-successful.txt`: 현재 확인에서 수집에 성공해 기존 회차 반입 후보로 유지하는 OCI 2개. 수집 성공은 CVE 예외 검토 및 최종 승인 완료를 뜻하지 않는다.
+- `quarantine-oci-successful.txt`: 삭제된 최초 회차에서 수집 성공했던 OCI 2개의 이력 및 새 런타임 회차 입력 subset. 수집 성공은 CVE 예외 검토 및 최종 승인 완료를 뜻하지 않는다.
 - `quarantine-oci-retry.txt`: 폐기된 포털 재시도 계획의 기록(입력 행 없음)
 - `manual-oci-import.txt`: 포털 밖 수동 반입 GLM OCI 2개
 - `quarantine-repository-sources.tsv`: 소스코드 전용 포털 회차 E-01~E-07 + 자체 S-01의 8개 행
@@ -24,7 +24,7 @@ M-02의 신청서 license 값은 2026-09-03 결정에 따라 MIT다. `artifacts.
 
 외부 repository 참고자료 7개는 `external-repository-references.tsv`에서 commit별로 관리하고 소스코드 전용 포털 회차를 따른다. GitHub PR·Issue 정적 참고자료 5개는 `external-web-references.tsv`에서 별도 관리한다. repository archive는 실제 source scan/SBOM 결과를 보존하며 OCI SBOM과 구분한다. 웹 캡처는 보조 근거로 보류한다. 실행에 필요한 개별 raw 파일과 전체 repository 참고자료가 겹치는 경우에도 신청 경로와 승인 증빙은 각각 유지한다.
 
-현재 반입 결과의 운영 분류는 다음과 같다. eugr·LiteLLM OCI와 RAW R-01~R-06은 기존 회차의 성공 후보로 유지하고, GLM OCI 두 개는 `manual-oci-import.txt`로 수동 반입한다. 성공 OCI에도 취약점 검사 결과가 남을 수 있으므로 보안 예외/조치 승인 전에는 “반입 완료”로 표시하지 않는다. 세 모델(M-01~M-03)은 항상 모델별 별도 신청 경로를 사용한다.
+현재 반입 결과의 운영 분류는 다음과 같다. eugr·LiteLLM OCI와 RAW R-01~R-06은 새 런타임 회차에서 원본명으로 재수집하고, GLM OCI 두 개는 `manual-oci-import.txt`로 수동 반입한다. 성공 OCI에도 취약점 검사 결과가 남을 수 있으므로 보안 예외/조치 승인 전에는 “반입 완료”로 표시하지 않는다. 세 모델(M-01~M-03)은 항상 모델별 별도 신청 경로를 사용한다.
 
 이 파일들은 API payload가 아니며 자동 제출하지 않는다. 기존 이미지·코드 회차, 소스코드 전용 회차, 모델·대형 OCI 수동 반입을 섞지 말고 각각 사람이 검토해 입력한다. 실제 회차 식별자와 상세 오류는 비공개 `state/import-portal-notes.md`에만 기록한다.
 

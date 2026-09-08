@@ -42,14 +42,14 @@ DS4F NVFP4는 별도 파일럿 범위이므로 본 반입·배포안에서 제�
 | 구분 | 처리 |
 |---|---|
 | 모델 3종 | 크기와 무관하게 포털/OCI 제외, 별도 모델 반입 신청 |
-| eugr·LiteLLM OCI 2개 + RAW 6개 | 기존 회차 성공분 유지, 검사·승인 결과 확보 |
+| eugr·LiteLLM OCI 2개 + RAW 6개 | 새 런타임 회차에서 재수집·검사·승인 |
 | GLM 대형 OCI 2개 | 포털 밖 수동 반입, digest·ARM64·실물 검사·SHA-256 확인 |
 | 외부 GitHub repository 7개 + 자체 repository 1개 | 고정 commit 소스코드 전용 포털 회차(8건) |
 | 이 저장소가 작성한 runbook·script·profile·config | 폐쇄망 SSH 설치·운영 하네스로 유지하며 upstream 참고자료와 provenance를 섞지 않음 |
 
 포털 목록, 모델 신청 목록, 외부 참고자료 문서와 본 저장소 산출물은 서로를 대신하지 않는다. 특히 GitHub repository에 대해 OCI용 SBOM이 생성될 것이라고 가정하지 않는다.
 
-현재 반입 후속 처리는 세 갈래로 나눈다. 기존 회차에서 수집 성공한 eugr B12X·LiteLLM OCI와 RAW R-01~R-06은 성공 payload를 그대로 유지하고, `manifests/manual-oci-import.txt`의 GLM OCI 2개는 모델과 함께 수동 반입한다. 외부·자체 repository 8건은 별도 소스코드 포털 회차로 제출한다. DS4F base, GLM NVFP4, DFlash2 drafter 모델 3종은 처음부터 포털 밖의 모델별 별도 신청 대상이다. OCI 2개의 CVE 검역 이상은 수집 실패와 별도인 보안 승인 gate이며, 조치 또는 예외 승인이 끝나기 전에는 최종 반입 완료로 간주하지 않는다.
+현재 반입 후속 처리는 세 갈래로 나눈다. 기존 회차에서 수집 성공한 eugr B12X·LiteLLM OCI와 RAW R-01~R-06은 새 런타임 회차에서 원본명으로 재수집하고, `manifests/manual-oci-import.txt`의 GLM OCI 2개는 모델과 함께 수동 반입한다. 외부·자체 repository 8건은 별도 소스코드 포털 회차로 제출한다. DS4F base, GLM NVFP4, DFlash2 drafter 모델 3종은 처음부터 포털 밖의 모델별 별도 신청 대상이다. OCI 2개의 CVE 검역 이상은 수집 실패와 별도인 보안 승인 gate이며, 조치 또는 예외 승인이 끝나기 전에는 최종 반입 완료로 간주하지 않는다.
 
 복사·제출용 산출물은 [최종 반입 구성](docs/16-final-import-plan.md), [수동 다운로드 목록](docs/manual-import-source-links.txt), [소스코드 회차 입력 목록](manifests/quarantine-repository-sources.tsv)을 사용한다.
 

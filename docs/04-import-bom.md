@@ -100,7 +100,7 @@ DS4F, GLM target, DFlash2 drafter 세 snapshot은 크기와 관계없이 포털�
 
 | 분류 | 대상 | 다음 처리 |
 |---|---|---|
-| 기존 회차 유지 후보 | eugr B12X OCI, LiteLLM OCI, RAW R-01~R-06 | 성공 payload와 manifest를 그대로 보존·반입 후보로 유지. OCI의 CVE 검토/조치 승인이 끝나기 전에는 최종 반입 완료로 표시하지 않음 |
+| 런타임 회차 재생성 후보 | eugr B12X OCI, LiteLLM OCI, RAW R-01~R-06 | 성공 payload와 manifest를 그대로 보존·반입 후보로 유지. OCI의 CVE 검토/조치 승인이 끝나기 전에는 최종 반입 완료로 표시하지 않음 |
 | 수동 대형 OCI 반입 | GLM `sm121-v11-dflash2` OCI, GLM `sm121-v8` rollback OCI | [수동 OCI 목록](../manifests/manual-oci-import.txt)으로 포털 밖 수동 신청. 동일 digest와 `linux/arm64` target을 재확인하고 모델 미포함 실물 검사를 반복 |
 | 별도 모델 신청 | M-01 DS4F base, M-02 GLM NVFP4, M-03 DFlash2 drafter | [모델별 신청서](10-separate-model-import-application.md)와 source inventory로 각각 한 행씩 신청. 포털 OCI/RAW에 섞지 않음 |
 

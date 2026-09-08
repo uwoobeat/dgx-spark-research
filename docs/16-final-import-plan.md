@@ -1,10 +1,10 @@
 # 최종 반입 구성
 
-결정일: 2026-09-08. 최종 산출물은 포털 회차 두 개와 수동 반입 목록 하나다.
+결정일: 2026-09-08. 최종 산출물은 포털 회차 두 개와 수동 반입 목록 하나다. 같은 날 후속 요청으로 기존 DGX 회차 두 개를 삭제하고 원본명을 사용하는 런타임·소스코드 회차를 재생성한다. 종속성 명칭은 repository의 `owner/repository`, RAW 원본 파일명, OCI 원본 image 이름을 보존한다. 관리 ID는 로컬 manifest에만 남긴다.
 
 | 구분 | 유형·건수 | 다운로드/수집 소스 | 입력 목록 |
 |---|---|---|---|
-| 회차 A: 기존 런타임·코드 유지 | eugr B12X·LiteLLM ARM64 OCI 2개 + launcher/patch/wheel RAW 6개 | 기존 회차 성공 payload | [OCI 성공분](../manifests/quarantine-oci-successful.txt), [RAW](../manifests/quarantine-raw-sources.tsv) |
+| 회차 A: 런타임·코드 재생성 | eugr B12X·LiteLLM ARM64 OCI 2개 + launcher/patch/wheel RAW 6개 | 새 런타임 회차에서 재수집하는 payload | [OCI 성공분](../manifests/quarantine-oci-successful.txt), [RAW](../manifests/quarantine-raw-sources.tsv) |
 | 회차 B: 소스코드 전용 | 외부 E-01~E-07 + 자체 S-01, commit ZIP 8개 | GitHub 고정 commit archive URL, 포털에서 수집 | [소스코드 회차 입력](../manifests/quarantine-repository-sources.tsv) |
 | 수동 반입 | 모델 snapshot 3개 + GLM 대형 ARM64 OCI 2개 | Hugging Face 고정 revision / GHCR platform digest | [수동 다운로드 목록](manual-import-source-links.txt) |
 

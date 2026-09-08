@@ -21,6 +21,8 @@ require(len(source) == 8 and {r["item_id"] for r in source} ==
         set(external) | {"S-01"}, "source round must contain exactly E-01..E-07 and S-01")
 for row in source:
     repo, pin = row["repository"], row["pin"]
+    require(row["name"] == repo.removeprefix("https://github.com/").removesuffix(".git"),
+            "repository display name must preserve upstream owner/repository")
     require(re.fullmatch(r"https://github\.com/[^/]+/[^/]+\.git", repo) is not None
             and re.fullmatch(r"[0-9a-f]{40}", pin) is not None, "invalid repository pin")
     require(row["download_url"] == repo[:-4] + "/archive/" + pin + ".zip",
@@ -38,6 +40,9 @@ for row in source:
     else:
         require(repo == "https://github.com/uwoobeat/dgx-spark-research.git",
                 "S-01 must identify own repository")
+for row in rows("quarantine-raw-sources.tsv"):
+    require(row["name"] == row["url"].rsplit("/", 1)[-1],
+            "RAW display name must preserve original filename")
 manual = set(refs("manual-oci-import.txt"))
 retained = set(refs("quarantine-oci-successful.txt"))
 required = set(refs("quarantine-oci-required.txt"))

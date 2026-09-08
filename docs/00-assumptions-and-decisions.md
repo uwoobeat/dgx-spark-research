@@ -81,11 +81,17 @@ model revision, OCI platform manifest digest, 외부 근거의 source commit을 
 
 | 구분 | 대상 | 정본 |
 |---|---|---|
-| 기존 회차 유지 | 수집 성공 OCI 2개(eugr B12X, LiteLLM) + RAW R-01~R-06 | `quarantine-oci-successful.txt`, `quarantine-raw-sources.tsv` |
+| 런타임 회차 재생성 | 수집 성공 OCI 2개(eugr B12X, LiteLLM) + RAW R-01~R-06 | `quarantine-oci-successful.txt`, `quarantine-raw-sources.tsv` |
 | 소스코드 전용 포털 회차 | 외부 repository E-01~E-07 + 자체 repository S-01, 총 8건 | `quarantine-repository-sources.tsv` |
 | 포털 밖 수동 반입 | 모델 M-01~M-03 + 대형 GLM OCI 2개, 총 5건 | `separate-model-import.tsv`, `manual-oci-import.txt` |
 
 최초 회차의 OCI 4 + RAW 6 입력과 실패 기록은 이력으로 보존한다. GLM 실패 항목 때문에 세 번째 포털 회차를 만들지 않는다. 대형 이미지 분류는 위 두 digest의 명시적 결정이며 임의 크기 임계값이 아니다. 저장소 ZIP과 실행 이미지는 별도 유형이다. 외부 원문과 자체 자료는 같은 소스 회차에서도 각각 독립된 provenance를 유지한다. PR/Issue 웹 캡처 W-01~W-05는 보조 조사 근거로 보류하고 이번 최종 수동 목록이나 제3 회차를 만들지 않는다. 원격 PR 토론이 없는 상태는 오프라인 근거의 남은 한계로 기록한다.
+
+### D-016: 회차 재생성과 원본명 보존 (2026-09-08)
+
+D-015의 기존 회차 유지 부분을 대체한다. 사용자의 후속 요청으로 기존 DGX 런타임·코드 회차 및 관리 ID가 이름에 포함된 소스코드 회차를 삭제하고 새로 만든다. 새 런타임 회차는 OCI 2 + RAW 6, 새 소스코드 회차는 repository 8건이다. 수동 모델 3 + 대형 OCI 2는 유지한다. 삭제한 회차의 결과는 이력이며 새 회차의 수집·검사·승인 상태로 재사용하지 않는다.
+
+포털 종속성 이름은 repository의 `owner/repository`, 개별 RAW의 원본 파일명, OCI의 원본 image 이름으로 기재한다. E-01/R-01/S-01 같은 ID는 내부 manifest 대조에만 사용한다. 용도와 유형은 별도 필드에 둔다.
 
 ## 미확정·승인 전 질문
 
