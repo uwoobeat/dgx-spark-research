@@ -68,8 +68,8 @@ images:
     license_review: MIT wrapper plus Apache-2.0 vLLM and third-party SBOM
     compressed_layer_bytes: 11313467484
     role: required
-    import_route: quarantine-oci
-    quarantine_registration: true
+    import_route: manual-oci-import
+    quarantine_registration: false
   - id: glm53-vllm-sm121
     ref: ghcr.io/tonyd2wild/vllm-glm53-flash@sha256:d77d375c742fc54f436dec5108b440f58f021bc6600052bf0e8fe5840357e78f
     source_tag: ghcr.io/tonyd2wild/vllm-glm53-flash:sm121-v8
@@ -90,8 +90,8 @@ images:
     license_review: Apache-2.0 vLLM plus third-party SBOM
     compressed_layer_bytes: 9710629881
     role: conditional
-    import_route: quarantine-oci-conditional
-    quarantine_registration: true
+    import_route: manual-oci-import-if-approved
+    quarantine_registration: false
   - id: glm53-vllm-dflash2
     ref: ghcr.io/tonyd2wild/vllm-glm53-flash@sha256:4def0ef644cb2e9814136dcffd5e385e21bc594f48f3b292234051904abe85a6
     source_tag: ghcr.io/tonyd2wild/vllm-glm53-flash:sm121-v11-dflash2
@@ -113,8 +113,8 @@ images:
     license_review: MIT outside enterprise directory; enterprise content separately licensed; inspect image SBOM
     compressed_layer_bytes: 385624109
     role: required
-    import_route: quarantine-oci
-    quarantine_registration: true
+    import_route: manual-oci-import
+    quarantine_registration: false
 sources:
   - repo: https://github.com/eugr/spark-vllm-docker.git
     commit: e9cf3596c4d8ecd677056b1d14eb5dda16c1f86e

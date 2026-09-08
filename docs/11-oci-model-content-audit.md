@@ -84,7 +84,7 @@ DS4F는 `vllm serve /models/ds4f`, GLM은 `vllm serve /models/glm53`와 `model=/
 
 ## 검역 산출물 SBOM 및 실물 검사 절차
 
-2026-09-08 결정에 따라 GitHub source는 소스코드 전용 포털 회차로 제출한다. 네 OCI image는 기존 회차 성공분 2개와 수동 반입 GLM 2개로 나누며, 각 image의 SBOM은 해당 immutable ARM64 manifest/config digest와 1:1로 결속한다. repository 검사 결과는 image 검사를 대체하지 않는다.
+2026-09-08 결정에 따라 GitHub source는 소스코드 전용 포털 회차로 제출한다. 네 OCI image는 모두 수동 반입하며, 각 image의 SBOM은 해당 immutable ARM64 manifest/config digest와 1:1로 결속한다. repository 검사 결과는 image 검사를 대체하지 않는다.
 
 승인된 OCI archive를 스테이징 Docker에 load한 뒤 아래 명령을 각 image에 실행한다. stdout/stderr를 image별 감사 로그로 보존하고 로그 자체의 SHA-256도 매체 manifest에 기록한다.
 

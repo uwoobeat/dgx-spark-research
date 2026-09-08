@@ -1,44 +1,66 @@
-# 수동 반입 링크 분류 (기준일: 2026-09-08 KST)
-# 다운로드 안내: 기존 manifest의 고정 버전을 사용한다. 이번 편집에서는 원격 다운로드 가능 여부를 재확인하지 않았다.
-# OCI: registry에서 이미지 전체 layer를 수집해 폐쇄망에서 load 가능한 archive로 준비한다.
-# 모델: Hugging Face의 고정 revision 전체 snapshot을 받는다(가중치·config·tokenizer·remote code 등).
-# 이 수동 목록은 모델 3건과 대형 OCI 2건만 포함한다.
-# 실제 수집·제출은 승인 절차에 따라 수행하며, 받은 파일의 SHA-256은 수집 후 기록한다.
-#
-# 런타임 회차 재생성(수집 성공): eugr B12X OCI, LiteLLM OCI, RAW R-01~R-06
-# 위 성공 아티팩트는 기존 회차 payload를 그대로 반입하므로 이 별도 링크 목록에 다시 넣지 않는다.
-#
-# 수동 OCI 반입: GLM 대형 OCI 2개. 포털 재신청 회차를 만들지 않는다.
-# GLM DFlash2 실행 이미지 (sm121-v11-dflash2) | 유형: Docker/OCI 이미지 | 아키텍처: linux/arm64
-# 다운로드 소스(registry image reference):
+수동 다운로드 목록
+기준일: 2026-09-08
+
+1. LLM 모델
+────────────────────────────────────────
+
+deepseek-ai/DeepSeek-V4-Flash-0731
+목적: 폐쇄망 DGX Spark 2대에서 DS4F 기본 모델 추론 서비스 운영.
+유형: 모델 snapshot 전체(가중치·설정·tokenizer 등).
+다운로드 위치:
+https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731/tree/7872f01b1d1fe23eabc4c98b48bffcef5a386062
+
+RedHatAI/GLM-5.3-Flash-NVFP4
+목적: 폐쇄망 DGX Spark 2대에서 GLM NVFP4 모델 추론 서비스 운영.
+유형: 모델 snapshot 전체(가중치·설정·tokenizer 등).
+다운로드 위치:
+https://huggingface.co/RedHatAI/GLM-5.3-Flash-NVFP4/tree/36c184c6cda000a481711306df5adde42f63321a
+
+incoai/GLM-5.3-Flash-DFlash2
+목적: GLM 추론 가속을 위한 DFlash2 draft 모델 제공.
+유형: draft 모델 snapshot 전체.
+다운로드 위치:
+https://huggingface.co/incoai/GLM-5.3-Flash-DFlash2/tree/bf582e4eacc1810f76656d1811693ff6c6737d2a
+
+위 링크의 고정 버전 파일 전체를 받습니다.
+파일별 다운로드 주소는 manifests/models/*.raw.tsv의 URL 열에 있습니다.
+
+
+2. Docker 이미지 (4개 모두 수동 반입)
+────────────────────────────────────────
+
+docker.io/eugr/spark-vllm-b12x:nightly-20260823
+목적: DS4F 모델을 DGX Spark 2대에서 실행할 vLLM 환경 제공.
+유형: Docker/OCI 실행 이미지(linux/arm64).
+다운로드 소스(Docker Hub, 고정 digest):
+docker.io/eugr/spark-vllm-b12x@sha256:7dc02f162929943ba2e14514066ed2a04bb7e9ed3592d4eb460ebcbb1f8376bd
+출처 페이지:
+https://hub.docker.com/r/eugr/spark-vllm-b12x
+
+ghcr.io/berriai/litellm:v1.99.1
+목적: 사용자 요청을 실행 중인 vLLM에 전달하는 공통 API 게이트웨이 제공.
+유형: Docker/OCI 실행 이미지(linux/arm64).
+다운로드 소스(GHCR, 고정 digest):
+ghcr.io/berriai/litellm@sha256:2d0f10790c6d9a72f240465ebe755987c40bdd0795cba9f57cbebc7ddc6e5c6f
+출처 확인 URL(이미지 manifest):
+https://ghcr.io/v2/berriai/litellm/manifests/sha256:2d0f10790c6d9a72f240465ebe755987c40bdd0795cba9f57cbebc7ddc6e5c6f
+
+ghcr.io/tonyd2wild/vllm-glm53-flash:sm121-v11-dflash2
+목적: GLM 모델을 DFlash2 추론 가속과 함께 실행할 vLLM 환경 제공.
+유형: Docker/OCI 실행 이미지(linux/arm64).
+다운로드 소스(GHCR, 고정 digest):
 ghcr.io/tonyd2wild/vllm-glm53-flash@sha256:4def0ef644cb2e9814136dcffd5e385e21bc594f48f3b292234051904abe85a6
-# 수집 방법: 승인된 온라인 staging에서 위 digest로 이미지 전체를 pull/save 또는 승인된 OCI 수집 도구로 archive 생성.
-# 아래 URL은 registry manifest 메타데이터 확인용이며, 브라우저에서 받는 이미지 TAR 파일이 아니다.
+출처 확인 URL(이미지 manifest):
 https://ghcr.io/v2/tonyd2wild/vllm-glm53-flash/manifests/sha256:4def0ef644cb2e9814136dcffd5e385e21bc594f48f3b292234051904abe85a6
-# GLM non-DFlash2 rollback 실행 이미지 (sm121-v8) | 유형: Docker/OCI 이미지 | 아키텍처: linux/arm64
-# 다운로드 소스(registry image reference):
+
+ghcr.io/tonyd2wild/vllm-glm53-flash:sm121-v8
+목적: GLM 최초 기동 검증 및 DFlash2 장애 시 복구용 vLLM 환경 제공.
+유형: Docker/OCI 실행 이미지(linux/arm64).
+다운로드 소스(GHCR, 고정 digest):
 ghcr.io/tonyd2wild/vllm-glm53-flash@sha256:d77d375c742fc54f436dec5108b440f58f021bc6600052bf0e8fe5840357e78f
-# 수집 방법: 승인된 온라인 staging에서 위 digest로 이미지 전체를 pull/save 또는 승인된 OCI 수집 도구로 archive 생성.
-# 아래 URL은 registry manifest 메타데이터 확인용이며, 브라우저에서 받는 이미지 TAR 파일이 아니다.
+출처 확인 URL(이미지 manifest):
 https://ghcr.io/v2/tonyd2wild/vllm-glm53-flash/manifests/sha256:d77d375c742fc54f436dec5108b440f58f021bc6600052bf0e8fe5840357e78f
 
-# 별도 모델 반입: 모델별 한 행 신청 및 파일별 source inventory 첨부
-# M-01 DS4F 기본 | 유형: 모델 snapshot | 다운로드 위치: Hugging Face
-# 고정 revision 전체 파일 목록:
-https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731/tree/7872f01b1d1fe23eabc4c98b48bffcef5a386062
-# 개별 파일 다운로드 URL: manifests/models/ds4f-base.raw.tsv의 URL 열(resolve/<revision>/...)
-# 해당 inventory의 모든 파일을 상대 경로대로 저장한다. 위 tree 페이지 HTML만 저장한 것은 모델 payload가 아니다.
-# M-02 GLM NVFP4 target | 유형: 모델 snapshot | 다운로드 위치: Hugging Face
-# 고정 revision 전체 파일 목록:
-https://huggingface.co/RedHatAI/GLM-5.3-Flash-NVFP4/tree/36c184c6cda000a481711306df5adde42f63321a
-# 개별 파일 다운로드 URL: manifests/models/glm53-redhat-nvfp4.raw.tsv의 URL 열(resolve/<revision>/...)
-# 해당 inventory의 모든 파일을 상대 경로대로 저장한다. 위 tree 페이지 HTML만 저장한 것은 모델 payload가 아니다.
-# M-03 DFlash2 drafter | 유형: 모델 snapshot | 다운로드 위치: Hugging Face
-# 고정 revision 전체 파일 목록:
-https://huggingface.co/incoai/GLM-5.3-Flash-DFlash2/tree/bf582e4eacc1810f76656d1811693ff6c6737d2a
-# 개별 파일 다운로드 URL: manifests/models/glm53-dflash2-draft.raw.tsv의 URL 열(resolve/<revision>/...)
-# 해당 inventory의 모든 파일을 상대 경로대로 저장한다. 위 tree 페이지 HTML만 저장한 것은 모델 payload가 아니다.
-
-
-# 레포지터리 소스코드는 수동 반입 대상이 아니다.
-# 별도 포털 회차 입력 목록: manifests/quarantine-repository-sources.tsv
+고정 digest로 이미지 전체를 수집하여 폐쇄망에서 load 가능한 archive로 준비합니다.
+출처 확인 URL의 JSON만 다운로드한 것은 실행 이미지가 아닙니다.
+모델 가중치는 위 LLM 모델 목록에 따라 별도로 받습니다.

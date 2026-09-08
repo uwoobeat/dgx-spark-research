@@ -8,7 +8,7 @@
 
 ### OCI images
 
-| 용도 | portal 입력용 immutable ref | arch | 압축 layer 합 | license 판단 | 필수 |
+| 용도 | 수동 수집용 immutable ref | arch | 압축 layer 합 | license 판단 | 필수 |
 |---|---|---|---:|---|---|
 | DS4F 기본 vLLM | `docker.io/eugr/spark-vllm-b12x@sha256:7dc02f162929943ba2e14514066ed2a04bb7e9ed3592d4eb460ebcbb1f8376bd` | linux/arm64 | 11.31 GB | wrapper repo MIT; vLLM Apache-2.0 및 image SBOM의 제3자 license 전체 검토 | 예 |
 | GLM DFlash2 SM121 vLLM | `ghcr.io/tonyd2wild/vllm-glm53-flash@sha256:4def0ef644cb2e9814136dcffd5e385e21bc594f48f3b292234051904abe85a6` | linux/arm64 | 14.20 GB | source repo root license `NOASSERTION`; vLLM Apache-2.0 기반. wrapper source 판단은 OCI 검역 license review에서 별도 처리하며 drafter license 결정과 무관 | 예 |
@@ -82,26 +82,26 @@ DS4F NVFP4 checkpoint, Anemll runtime, 관련 playbook은 별도 파일럿 범�
 
 ## E. 검역 포털 신청 항목
 
-2026-09-08 이후 포털은 기존 OCI·RAW 회차와 별도 repository 소스코드 회차로 나눈다. 대형 GLM OCI는 수동 반입한다. 포털 제품별 manager 이름과 필드 구성은 공개 저장소의 계약으로 고정하지 않고 제출 시 승인된 양식에서 확인한다.
+2026-09-08 D-017 이후 포털은 코드·wheel 6건 회차와 repository 소스코드 8건 회차만 사용한다. 모든 OCI 4개는 모델 3개와 함께 수동 반입한다.
 
-필수 입력은 OCI 4개와 RAW 6개, 합계 10건이다. 제출 화면과 생성 결과 모두에서 `DOCKER linux/arm64` + `RAW raw-any`가 명시적으로 기록됐는지 확인한다. Docker target이 기본 architecture로 대체되지 않았다는 증빙과 최종 수집·scan·license·승인 결과는 Git에서 제외된 비공개 실행 기록에 보존한다.
+포털 입력은 코드·wheel RAW 6건과 repository RAW 8건을 서로 다른 회차로 제출한다. 두 회차 모두 RAW만 포함하며 OCI 입력은 없어야 한다. 최종 수집·scan·license·승인 결과는 Git에서 제외된 비공개 실행 기록에 보존한다.
 
-- OCI: `image@sha256:digest` 형태로 platform manifest를 지정한다.
+- OCI는 포털에 입력하지 않는다. 수동 수집 시 `image@sha256:digest` 형태로 ARM64 platform manifest를 지정한다.
 - RAW: 외부 URL, 이름, 버전, 목적, license를 기록하며 각 파일은 승인된 포털 제한을 충족해야 한다.
 - 승인 절차가 만든 SBOM, license, 악성코드·취약점 검사와 반입 문서를 보존한다.
-- OCI 제출용 목록은 `manifests/quarantine-oci-*.txt`, 개별 실행 파일과 wheel은 `manifests/quarantine-raw-sources.tsv`로 고정한다.
+- 수동 OCI 목록은 `manifests/manual-oci-import.txt`, 포털의 개별 실행 파일과 wheel은 `manifests/quarantine-raw-sources.tsv`, repository는 `manifests/quarantine-repository-sources.tsv`로 고정한다.
 - 제품별 화면·상태값과 실제 실행 결과는 공개 저장소가 아닌 승인된 비공개 기록에서 관리한다. 공개 절차는 [검역 포털 절차](08-quarantine-portal.md)를 따른다.
 
 DS4F, GLM target, DFlash2 drafter 세 snapshot은 크기와 관계없이 포털에 입력하지 않는다. 세 inventory는 별도 모델 반입 신청 증빙으로만 사용한다. 모델 파일을 RAW 행으로 만들거나 runtime OCI image에 포함하지 않는다. 전체 GitHub repository는 소스코드 전용 포털 회차를 따른다.
 
 ### 현행 처리 분류
 
-현재 포털 처리 결과는 최초 신청 정본(OCI 4 + RAW 6)을 변경하지 않고, 수집 결과에 따라 다음처럼 분리한다. 항목별 공개 가능한 결과 분류는 `manifests/quarantine-attempt-result.tsv`와 subset 목록에 두고, 실제 회차 식별자·상세 오류·검사 화면은 현장에서 생성하는 비공개 `state/import-portal-notes.md`에만 둔다.
+최초 OCI 4 + RAW 6의 수집 결과는 이력이다. 현행 경로는 D-017을 따르며 실제 회차 정보는 비공개 운영 기록에 보존한다.
 
 | 분류 | 대상 | 다음 처리 |
 |---|---|---|
-| 런타임 회차 재생성 후보 | eugr B12X OCI, LiteLLM OCI, RAW R-01~R-06 | 성공 payload와 manifest를 그대로 보존·반입 후보로 유지. OCI의 CVE 검토/조치 승인이 끝나기 전에는 최종 반입 완료로 표시하지 않음 |
-| 수동 대형 OCI 반입 | GLM `sm121-v11-dflash2` OCI, GLM `sm121-v8` rollback OCI | [수동 OCI 목록](../manifests/manual-oci-import.txt)으로 포털 밖 수동 신청. 동일 digest와 `linux/arm64` target을 재확인하고 모델 미포함 실물 검사를 반복 |
+| 코드·wheel 회차 | 스크립트 5개와 PyYAML wheel 1개 | RAW 6건만 신청하며 원본명을 보존. OCI는 포함하지 않음 |
+| 수동 OCI 반입 | eugr B12X, LiteLLM, GLM `sm121-v11-dflash2`, GLM `sm121-v8` | [수동 OCI 목록](../manifests/manual-oci-import.txt)으로 포털 밖 수동 신청. 동일 digest와 `linux/arm64` target을 재확인하고 모델 미포함 실물 검사를 반복 |
 | 별도 모델 신청 | M-01 DS4F base, M-02 GLM NVFP4, M-03 DFlash2 drafter | [모델별 신청서](10-separate-model-import-application.md)와 source inventory로 각각 한 행씩 신청. 포털 OCI/RAW에 섞지 않음 |
 
 수집 성공과 보안·라이선스·악성코드·취약점 승인 완료는 서로 다른 상태다. “그대로 반입”은 성공 payload의 identity와 checksum을 유지한다는 의미이며, 검사 이상이 있는 OCI는 승인된 예외 또는 조치 결과를 받은 뒤에만 매체에 기록한다.

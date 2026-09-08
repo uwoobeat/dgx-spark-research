@@ -4,10 +4,10 @@
 
 이 저장소는 서로 이어지는 두 목적을 가진다.
 
-1. 외부망에서 NVIDIA DGX Spark용 근거를 조사하고 immutable 버전·digest·checksum을 고정하여, 기존 이미지·코드 회차, repository 소스코드 회차, 모델·대형 OCI 수동 반입을 서로 섞이지 않게 준비한다.
+1. 외부망에서 NVIDIA DGX Spark용 근거를 조사하고 immutable 버전·digest·checksum을 고정하여, 코드·wheel 회차, repository 소스코드 회차, 모델·모든 OCI 수동 반입을 서로 섞이지 않게 준비한다.
 2. 승인 자산과 SSH 연결정보가 주어진 폐쇄망에서 NVIDIA DGX Spark 2대를 점검·설정하고, vLLM 멀티노드 `mp` executor로 `TP=2` 추론을 worker-first로 실행한 뒤 LiteLLM을 단일 API 게이트웨이로 운영하는 재현 가능한 하네스를 제공한다.
 
-기본 작업 모드는 **`external`(외부망 조사·검역 준비)** 이다. 이 모드에서는 DGX에 SSH 접속하거나 내부망 설치 성공을 가정하지 않는다. 포털은 기존 이미지·코드 회차와 repository 소스코드 전용 회차의 두 개이며, 제출할 때 `linux/arm64`가 기본값이 아닌 명시적 target으로 기록됐는지 확인한다. 실제 회차 식별자·시각·상태와 처리 이력은 공개 저장소에 기록하지 않는다. 모드 판정과 전환 gate는 [에이전트 실행 모드 계약](docs/13-agent-modes.md)을 따른다.
+기본 작업 모드는 **`external`(외부망 조사·검역 준비)** 이다. 이 모드에서는 DGX에 SSH 접속하거나 내부망 설치 성공을 가정하지 않는다. 포털은 코드·wheel 회차와 repository 소스코드 전용 회차의 두 개이며 RAW만 입력한다. 모든 OCI는 수동 반입하며 `linux/arm64` manifest를 검증한다. 실제 회차 식별자·시각·상태와 처리 이력은 공개 저장소에 기록하지 않는다. 모드 판정과 전환 gate는 [에이전트 실행 모드 계약](docs/13-agent-modes.md)을 따른다.
 
 ## 현재 결론
 
@@ -19,7 +19,7 @@
 
 `eugr/spark-vllm-docker`의 고정 commit에서 실행에 필요한 개별 launcher 파일만 checksum과 함께 검역하여 공통 launcher로 사용하되 image는 통합하지 않는다. 전체 GitHub repository archive는 소스코드 전용 포털 회차로 분리한다. DS4F는 eugr B12X image, GLM은 tonyd2wild `sm121-v11-dflash2` image를 각각 사용한다. eugr는 동일 image와 volume을 두 노드에 배치하고 worker rank 1을 먼저 실행한 뒤 head rank 0에 API를 여는 오케스트레이션만 담당한다. 폐쇄망에서는 `--setup`, download/build, runtime PR fetch를 사용하지 않는다.
 
-모델 snapshot은 크기와 관계없이 포털과 OCI image에서 제외한다. DS4F target, GLM target, DFlash2 drafter는 각각 별도 모델 반입 신청 항목이며, 포털 OCI는 모델 weight가 없다는 검사와 SBOM을 통과해야 한다.
+모델 snapshot은 크기와 관계없이 포털과 OCI image에서 제외한다. DS4F target, GLM target, DFlash2 drafter는 각각 별도 모델 반입 신청 항목이며, 수동 반입 OCI는 모델 weight가 없다는 검사와 SBOM을 통과해야 한다.
 
 2026-09-03 사용자 결정에 따라 `RedHatAI/GLM-5.3-Flash-NVFP4`의 반입 license는 원본 Z.AI MIT를 근거로 `MIT`로 기재한다. 고정 RedHatAI checkpoint 자체의 license metadata와 `LICENSE`는 없으므로 증빙에는 선언값 `NOASSERTION`과 내부 결론값 `MIT`를 분리하고, 원본 MIT license·고지와 모델 카드 provenance를 함께 보존한다.
 
@@ -42,14 +42,14 @@ DS4F NVFP4는 별도 파일럿 범위이므로 본 반입·배포안에서 제�
 | 구분 | 처리 |
 |---|---|
 | 모델 3종 | 크기와 무관하게 포털/OCI 제외, 별도 모델 반입 신청 |
-| eugr·LiteLLM OCI 2개 + RAW 6개 | 새 런타임 회차에서 재수집·검사·승인 |
-| GLM 대형 OCI 2개 | 포털 밖 수동 반입, digest·ARM64·실물 검사·SHA-256 확인 |
+| 스크립트 5개 + PyYAML wheel 1개 | 코드·wheel 전용 회차 |
+| vLLM 3개 + LiteLLM OCI 1개 | 포털 밖 수동 반입, digest·ARM64·실물 검사·SHA-256 확인 |
 | 외부 GitHub repository 7개 + 자체 repository 1개 | 고정 commit 소스코드 전용 포털 회차(8건) |
 | 이 저장소가 작성한 runbook·script·profile·config | 폐쇄망 SSH 설치·운영 하네스로 유지하며 upstream 참고자료와 provenance를 섞지 않음 |
 
 포털 목록, 모델 신청 목록, 외부 참고자료 문서와 본 저장소 산출물은 서로를 대신하지 않는다. 특히 GitHub repository에 대해 OCI용 SBOM이 생성될 것이라고 가정하지 않는다.
 
-현재 반입 후속 처리는 세 갈래로 나눈다. 기존 회차에서 수집 성공한 eugr B12X·LiteLLM OCI와 RAW R-01~R-06은 새 런타임 회차에서 원본명으로 재수집하고, `manifests/manual-oci-import.txt`의 GLM OCI 2개는 모델과 함께 수동 반입한다. 외부·자체 repository 8건은 별도 소스코드 포털 회차로 제출한다. DS4F base, GLM NVFP4, DFlash2 drafter 모델 3종은 처음부터 포털 밖의 모델별 별도 신청 대상이다. OCI 2개의 CVE 검역 이상은 수집 실패와 별도인 보안 승인 gate이며, 조치 또는 예외 승인이 끝나기 전에는 최종 반입 완료로 간주하지 않는다.
+2026-09-08 D-017에 따라 포털은 코드·wheel 6건과 repository 소스 8건의 두 회차다. 모든 실행 OCI 4개와 모델 3개는 수동 반입한다. OCI의 기존 CVE 검토는 유지하며 새 수동 payload의 검증·승인을 별도로 확인한다.
 
 복사·제출용 산출물은 [최종 반입 구성](docs/16-final-import-plan.md), [수동 다운로드 목록](docs/manual-import-source-links.txt), [소스코드 회차 입력 목록](manifests/quarantine-repository-sources.tsv)을 사용한다.
 

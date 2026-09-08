@@ -1,20 +1,22 @@
 # 최종 반입 구성
 
-결정일: 2026-09-08. 최종 산출물은 포털 회차 두 개와 수동 반입 목록 하나다. 같은 날 후속 요청으로 기존 DGX 회차 두 개를 삭제하고 원본명을 사용하는 런타임·소스코드 회차를 재생성한다. 종속성 명칭은 repository의 `owner/repository`, RAW 원본 파일명, OCI 원본 image 이름을 보존한다. 관리 ID는 로컬 manifest에만 남긴다.
+결정일: 2026-09-08 (D-017). 최종 산출물은 코드·wheel 회차, 레포지터리 소스코드 회차, 모델·모든 실행 OCI의 수동 반입 목록이다. 포털 회차에는 Docker 이미지를 넣지 않는다. 원본 종속성 명칭을 보존한다.
 
 | 구분 | 유형·건수 | 다운로드/수집 소스 | 입력 목록 |
 |---|---|---|---|
-| 회차 A: 런타임·코드 재생성 | eugr B12X·LiteLLM ARM64 OCI 2개 + launcher/patch/wheel RAW 6개 | 새 런타임 회차에서 재수집하는 payload | [OCI 성공분](../manifests/quarantine-oci-successful.txt), [RAW](../manifests/quarantine-raw-sources.tsv) |
+| 회차 A: 스크립트 코드·wheel | 스크립트 5개 + ARM64 PyYAML wheel 1개 | 고정 원본 URL, 포털 RAW 수집 | [RAW 6건](../manifests/quarantine-raw-sources.tsv) |
 | 회차 B: 소스코드 전용 | 외부 E-01~E-07 + 자체 S-01, commit ZIP 8개 | GitHub 고정 commit archive URL, 포털에서 수집 | [소스코드 회차 입력](../manifests/quarantine-repository-sources.tsv) |
-| 수동 반입 | 모델 snapshot 3개 + GLM 대형 ARM64 OCI 2개 | Hugging Face 고정 revision / GHCR platform digest | [수동 다운로드 목록](manual-import-source-links.txt) |
+| 수동 반입 | 모델 snapshot 3개 + ARM64 OCI 4개 | Hugging Face 고정 revision / Docker Hub·GHCR platform digest | [수동 다운로드 목록](manual-import-source-links.txt) |
 
-## 수동 반입 5건
+## 수동 반입 7건
 
 | 항목 | 유형 | 규모 기준 | 받아야 하는 것 |
 |---|---|---|---|
 | M-01 DS4F 기본 | LLM 모델 snapshot | 166,898,661,074 B | 고정 revision의 74개 파일 전체 |
 | M-02 GLM NVFP4 | LLM 모델 snapshot | 197,881,157,135 B | 고정 revision의 21개 파일 전체 |
 | M-03 DFlash2 drafter | LLM draft 모델 snapshot | 2,342,460,697 B | 고정 revision의 5개 파일 전체 |
+| eugr/spark-vllm-b12x | DS4F 실행 OCI, linux/arm64 | 압축 layer 합계 11,313,467,484 B | 모델 없는 전체 image archive |
+| berriai/litellm | API gateway OCI, linux/arm64 | 압축 layer 합계 385,624,109 B | 전체 image archive |
 | GLM sm121-v11-dflash2 | 실행 Docker/OCI image, linux/arm64 | 압축 layer 합계 14,204,524,092 B | 모델 없는 전체 image의 load 가능한 archive |
 | GLM sm121-v8 | rollback Docker/OCI image, linux/arm64 | 압축 layer 합계 14,180,175,179 B | 모델 없는 전체 image의 load 가능한 archive |
 
@@ -24,7 +26,7 @@
 
 [입력 TSV](../manifests/quarantine-repository-sources.tsv)는 이름·유형·출처·전체 commit·ZIP 다운로드 URL·용도·license·수집 후 hash 상태를 포함한다. 자체 S-01은 이 TSV에 기록된 공개 commit이며, 그 이후 수정은 해당 archive에 자동 반영되지 않는다. E-05/E-06은 같은 vLLM 저장소의 서로 다른 commit이므로 합치지 않는다. 자체 작성물과 외부 자료의 provenance는 같은 회차에서도 별도 행으로 보존한다.
 
-최초 회차에서 실패한 GLM 2건은 이력으로 남기되 포털 재시도 회차를 만들지 않는다. `quarantine-oci-retry.txt`는 폐기된 계획 기록이며 현행 수집 입력이 아니다. `quarantine-oci-required.txt`의 4개 runtime identity 역시 최초 요청 이력으로 보존한다.
+최초 회차에서 실패한 GLM 2건은 이력으로 남기되 포털 재시도 회차를 만들지 않는다. `quarantine-oci-retry.txt`는 폐기된 계획 기록이며 현행 수집 입력이 아니다. 모든 `quarantine-oci-*.txt` 입력은 폐기했다. 네 runtime identity는 `manual-oci-import.txt`와 `artifacts.lock.yaml`이 정본이며 최초 수집 결과는 `quarantine-attempt-result.tsv` 이력으로 보존한다.
 
 PR/Issue 정적 웹 캡처 5개는 보조 조사 근거로 보류한다. 이번 최종 수동 목록에 넣거나 별도 회차를 추가하지 않는다. 따라서 원격 토론까지 오프라인으로 보존됐다고 주장하지 않는다.
 

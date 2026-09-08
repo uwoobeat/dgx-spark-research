@@ -60,7 +60,7 @@ awk -F '\t' '
   }
 ' "$raw"
 
-required_oci="$repo_root/manifests/quarantine-oci-required.txt"
+required_oci="$repo_root/manifests/manual-oci-import.txt"
 awk '
   NF != 1 || $0 !~ /@sha256:[0-9a-f]{64}$/ { printf "invalid required OCI ref at row %d\n", NR > "/dev/stderr"; bad = 1 }
   END {
@@ -94,10 +94,10 @@ awk -F '\t' '
   $5 != "COLLECTION_SUCCESS" && $5 != "COLLECTION_FAILED" {
     printf "invalid collection result at row %d\n", NR > "/dev/stderr"; bad = 1
   }
-  $5 == "COLLECTION_SUCCESS" && $6 != "current-quarantine-round" {
-    printf "successful artifact is not retained in current round at row %d\n", NR > "/dev/stderr"; bad = 1
+  $2 == "RAW" && $6 != "current-quarantine-round" {
+    printf "RAW artifact has an invalid current route at row %d\n", NR > "/dev/stderr"; bad = 1
   }
-  $5 == "COLLECTION_FAILED" && $6 != "manual-oci-import" {
+  $2 == "OCI" && $6 != "manual-oci-import" {
     printf "failed artifact is not routed to manual OCI import at row %d\n", NR > "/dev/stderr"; bad = 1
   }
   $2 == "OCI" { oci += 1 }
@@ -111,25 +111,6 @@ awk -F '\t' '
     exit bad
   }
 ' "$attempt_result"
-
-successful_oci="$repo_root/manifests/quarantine-oci-successful.txt"
-retry_oci="$repo_root/manifests/manual-oci-import.txt"
-test -f "$successful_oci" || { printf 'missing successful OCI result manifest\n' >&2; exit 4; }
-test -f "$retry_oci" || { printf 'missing retry OCI result manifest\n' >&2; exit 4; }
-
-expected_successful_oci='docker.io/eugr/spark-vllm-b12x@sha256:7dc02f162929943ba2e14514066ed2a04bb7e9ed3592d4eb460ebcbb1f8376bd
-ghcr.io/berriai/litellm@sha256:2d0f10790c6d9a72f240465ebe755987c40bdd0795cba9f57cbebc7ddc6e5c6f'
-expected_retry_oci='ghcr.io/tonyd2wild/vllm-glm53-flash@sha256:4def0ef644cb2e9814136dcffd5e385e21bc594f48f3b292234051904abe85a6
-ghcr.io/tonyd2wild/vllm-glm53-flash@sha256:d77d375c742fc54f436dec5108b440f58f021bc6600052bf0e8fe5840357e78f'
-
-printf '%b\n' "$expected_successful_oci" | cmp -s - "$successful_oci" || {
-  printf 'successful OCI result manifest does not match the recorded 2-item subset\n' >&2
-  exit 4
-}
-printf '%b\n' "$expected_retry_oci" | cmp -s - "$retry_oci" || {
-  printf 'retry OCI result manifest does not match the recorded 2-item subset\n' >&2
-  exit 4
-}
 
 separate="$repo_root/manifests/separate-model-import.tsv"
 test -f "$separate" || { printf 'missing separate model import manifest\n' >&2; exit 4; }
@@ -226,4 +207,4 @@ if [[ -f "$external_web" ]]; then
 fi
 
 python3 "$repo_root/scripts/validate-final-import-plan.py"
-printf 'import routing verified: existing round retains 2 OCI + 6 RAW; source round has 8 repositories; manual import has 3 models + 2 OCI; %d web references deferred\n' "$web_count"
+printf 'import routing verified: code round has 6 RAW and zero OCI; source round has 8 repositories; manual import has 3 models + 4 OCI; %d web references deferred\n' "$web_count"

@@ -44,17 +44,25 @@ for row in rows("quarantine-raw-sources.tsv"):
     require(row["name"] == row["url"].rsplit("/", 1)[-1],
             "RAW display name must preserve original filename")
 manual = set(refs("manual-oci-import.txt"))
-retained = set(refs("quarantine-oci-successful.txt"))
-required = set(refs("quarantine-oci-required.txt"))
-require(len(manual) == 2 and len(retained) == 2 and not manual & retained
-        and manual | retained == required, "OCI routes must partition four required images")
-require(not refs("quarantine-oci-retry.txt"), "no third OCI retry round may be queued")
+require(len(manual) == 4, "manual OCI list must contain all four required images")
+for name in ("quarantine-oci-required.txt", "quarantine-oci-successful.txt",
+             "quarantine-oci-conditional.txt", "quarantine-oci-retry.txt"):
+    require(not refs(name), "OCI input must not be queued for portal: " + name)
+for name in ("quarantine-raw-sources.tsv", "quarantine-repository-sources.tsv"):
+    for row in rows(name):
+        url = row.get("url", row.get("download_url", ""))
+        require("@sha256:" not in url and "/v2/" not in url,
+                "OCI reference mixed into portal source input")
 attempts = rows("quarantine-attempt-result.tsv")
 require({r["artifact_ref"] for r in attempts if r["planned_route"] == "manual-oci-import"}
-        == manual, "manual image plan differs from failed collection routing")
+        == manual, "manual image plan differs from current collection routing")
 text = (ROOT / "docs/manual-import-source-links.txt").read_text()
 require("https://github.com/" not in text, "repositories must not remain in manual list")
-require(all(ref in text for ref in manual), "manual download list misses OCI refs")
+manual_links = [line for line in text.splitlines() if line.startswith("https://")]
+require(len(manual_links) == 7 and all(re.fullmatch(r"https?://\S+", line) for line in manual_links),
+        "manual download document must contain exactly seven external URLs")
+require(all(ref in text for ref in manual),
+        "manual download document misses fixed OCI collection refs")
 for row in rows("separate-model-import.tsv"):
     require(row["source"] + "/tree/" + row["version"] in text, "manual list misses model pin")
-print("final import plan verified: two portal rounds; manual models=3, OCI=2")
+print("final import plan verified: two portal rounds; manual models=3, OCI=4")

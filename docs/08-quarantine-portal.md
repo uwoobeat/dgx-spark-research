@@ -1,39 +1,25 @@
-# 반입 포털: 기존 회차와 소스코드 회차
+# 반입 포털: 코드 회차와 레포지터리 회차
 
-결정일: 2026-09-08. 실제 포털 주소·회차 ID·처리 시각·상세 상태는 Git 제외 `state/import-portal-notes.md`에만 기록한다. 인증 비밀은 `.env`에만 둔다.
+결정일: 2026-09-08 (D-017). 모든 Docker/OCI image는 수동 반입하며 포털 회차에 포함하지 않는다. 실제 회차 ID·처리 상태는 Git 제외 `state/import-portal-notes.md`에 기록한다.
 
-## 최종 구성
-
-| 경로 | 범위 | 정본 |
+| 경로 | 대상 | 입력 정본 |
 |---|---|---|
-| 회차 A — 런타임·코드 | OCI 2 + RAW 6 재수집 | `quarantine-oci-successful.txt`, `quarantine-raw-sources.tsv` |
-| 회차 B — 레포지터리 소스코드 | 외부 E-01~E-07 + 자체 S-01, 총 8 | `quarantine-repository-sources.tsv` |
-| 포털 밖 수동 | 모델 3 + 대형 GLM OCI 2 | `separate-model-import.tsv`, `manual-oci-import.txt` |
+| 회차 A — 스크립트 코드·wheel | 원본 스크립트 5개 + PyYAML ARM64 wheel 1개 | `quarantine-raw-sources.tsv` |
+| 회차 B — 레포지터리 소스코드 | 외부 7건 + 자체 1건 | `quarantine-repository-sources.tsv` |
+| 수동 반입 | 모델 3개 + 실행 OCI 4개 | `separate-model-import.tsv`, `manual-oci-import.txt` |
 
-회차 수는 이 프로젝트의 관리 대상 두 개다. 다른 프로젝트의 기존 회차는 변경하지 않는다. 최초 회차의 10개 요청(OCI 4 + RAW 6)은 이력으로 유지하며 GLM OCI 실패 2개는 수동 경로로 전환한다. 실패 기록을 지우거나 세 번째 재시도 회차를 만들지 않는다.
+이미지가 포함됐던 이전 런타임 회차는 제거하고 코드·wheel 6건으로 새로 생성한다. 원본명 소스코드 회차는 유지한다. 다른 프로젝트 회차는 변경하지 않는다.
 
-## 회차 A 유지
+## 제출 전
 
-2026-09-08 후속 요청으로 이전 두 DGX 회차를 삭제하고 런타임·소스코드 회차를 새로 생성한다. eugr B12X·LiteLLM ARM64 image와 RAW 6개를 새 런타임 회차에서 재수집한다. 이전 성공은 신규 수집 성공을 보장하지 않는다. 수집 성공은 보안 승인 완료가 아니며 CVE·license·악성코드 검사와 예외 처분을 항목별로 확인한다. OCI 플랫폼 digest는 `artifacts.lock.yaml`과 일치해야 한다. `quarantine-oci-required.txt`는 최초 요청 4개/전체 runtime identity의 이력이며 새 회차에 그대로 붙여넣는 목록이 아니다.
+- A에는 RAW 6건만, B에는 repository ZIP 8건만 입력한다. Docker/crane 입력과 image archive URL을 넣지 않는다.
+- 코드·wheel은 원본 파일명, repository는 원본 `owner/repository` 이름을 쓴다. 관리 ID와 `source` 접미어를 종속성 명칭에 붙이지 않는다.
+- URL·commit·license·목적은 manifest와 대조한다. 미확정 license를 임의로 바꾸지 않는다.
+- 최종 요약과 생성된 회차의 manager가 RAW만인지 확인한다.
+- 모델을 RAW 파일로 등록하거나 OCI에 포함하지 않는다.
 
-## 회차 B 생성
+## 수집 후
 
-1. [소스코드 목록](../manifests/quarantine-repository-sources.tsv)의 8개 행을 대조한다. `repository`는 출처, `pin`은 버전, `download_url`은 고정 commit ZIP이다.
-2. 새 소스코드 전용 회차에서 허용된 URL 수집 입력을 사용한다. 실제 UI의 manager 이름·크기 제한·필드는 비공개 운영 기록에 남긴다.
-3. 이름은 TSV의 `name`을 그대로 쓰고 전체 commit·용도·license를 행별로 기재한다. `item_id`는 로컬 대조용이며 포털 종속성 명칭에 E-01/S-01 등의 접두어 또는 source 접미어를 붙이지 않는다. E-03과 S-01의 license 미확정 상태를 임의 MIT로 바꾸지 않는다.
-4. 최종 요약이 소스 archive 8건인지 확인한다. OCI·모델·R-01~R-06을 이 회차에 중복 입력하지 않는다.
-5. 생성 후 source URL·commit과 수집 archive·파일 수·실제 bytes·SHA-256·license·scan/SBOM 결과를 대조한다. 실제 원격 생성 여부와 처리 상태는 비공개 기록에서 관리한다.
+각 회차의 수집·검사·승인 결과를 별도로 확인한다. 생성 완료가 수집 성공이나 보안 승인을 의미하지 않는다. archive/파일의 실제 bytes·SHA-256·license·scan/SBOM·신청서 원본을 보존한다. 소스코드 검사는 실행 image 검사를 대신하지 않는다.
 
-자체 S-01은 공개된 고정 commit만 제출한다. 로컬 미커밋 변경은 해당 원격 archive에 포함되지 않는다. 원문 소스 archive의 검사 결과는 대응 OCI image의 검사 결과를 대체하지 않는다.
-
-## 수동 반입
-
-[수동 다운로드 목록](manual-import-source-links.txt)에 모델 3개와 GLM image 2개만 둔다. 모델은 완전한 snapshot과 파일별 SHA-256, OCI는 load 가능한 archive와 platform digest·archive SHA-256·모델 미포함 검사 증빙을 준비한다. 수동 반입도 조직의 검사·승인·매체 절차를 따른다.
-
-## 제출 결과와 보관
-
-- 기존 회차: `quarantine-attempt-result.tsv`는 원본 결과와 후속 route를 분리한다.
-- 소스코드 회차: 생성·수집·검사·승인 단계는 각각 구분하고 실제 결과 없이 완료로 쓰지 않는다.
-- 수동 payload: 수령·SHA-256·검사·승인·매체 read-back 결과를 별도로 보존한다.
-- 포털이 생성한 신청서·SBOM·scan 원본은 수정하지 않고 `staging/approval/`에 보관한다.
-- 공개 문서에는 회차 ID·실계정·조직 식별자를 포함하지 않는다.
+`quarantine-oci-*.txt`는 폐기된 입력이며 실행 가능한 행이 없다. 최초 OCI 수집 결과는 `quarantine-attempt-result.tsv`에 이력으로만 남긴다. 모든 OCI는 [수동 다운로드 목록](manual-import-source-links.txt)에 따라 수집하고 ARM64·platform digest·모델 미포함·SBOM/scan·실제 archive SHA-256을 별도로 검증한다.

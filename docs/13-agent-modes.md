@@ -43,7 +43,7 @@ export DGX_AGENT_MODE=internal
 - OCI manifest의 `linux/arm64` 확인, immutable digest·크기·라이선스·SBOM·checksum 수집 및 비교
 - 모델 snapshot의 파일 inventory와 별도 모델 반입 신청서 작성
 - 외부 repository 자료를 검토해 필요한 절차·설정·최소 자산을 이 저장소의 자체 런북/하네스로 구현
-- 포털에 넣을 모델 미포함 runtime OCI image와 그 외 허용된 소형 바이너리의 신청 초안 작성
+- 수동 반입할 모델 미포함 OCI와 포털로 반입할 코드·wheel·repository 소스의 별도 신청 초안 작성
 - 로컬 정적 검사, 구문 검사, mock/dry-run 및 문서 검증
 - 사용자의 별도 실행 승인 후 포털 제출이나 승인된 온라인 수집 수행
 

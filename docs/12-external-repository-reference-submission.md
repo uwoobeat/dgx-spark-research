@@ -4,12 +4,12 @@
 
 ## 범위와 경계
 
-이 문서는 GitHub의 **외부 upstream repository 전체 자료**를 설계 검토, 출처 추적, 장애 분석, 필요 시 재빌드에 참고하기 위한 별도 제출 목록이다. repository archive는 기존 이미지·코드 회차와 분리된 소스코드 전용 포털 회차에 등록한다. 외부 E-01~E-07과 자체 S-01의 8건이며 입력 정본은 [quarantine-repository-sources.tsv](../manifests/quarantine-repository-sources.tsv)다.
+이 문서는 GitHub의 **외부 upstream repository 전체 자료**를 설계 검토, 출처 추적, 장애 분석, 필요 시 재빌드에 참고하기 위한 별도 제출 목록이다. repository archive는 코드·wheel 회차와 분리된 소스코드 전용 포털 회차에 등록한다. 외부 E-01~E-07과 자체 S-01의 8건이며 입력 정본은 [quarantine-repository-sources.tsv](../manifests/quarantine-repository-sources.tsv)다.
 
 다음 세 묶음과 명확히 분리한다.
 
-- 기존 포털 OCI/RAW 회차: 성공 runtime image 2개와 실행 필수 개별 파일 5개, PyYAML wheel 1개
-- 수동 반입: DS4F, GLM target, DFlash2 drafter snapshot 각 1행과 GLM 대형 OCI 2개
+- 코드·wheel 전용 포털 회차: 실행 필수 개별 파일 5개, PyYAML wheel 1개
+- 수동 반입: DS4F, GLM target, DFlash2 drafter snapshot 각 1행과 모든 실행 OCI 4개
 - 자체 작성 repository: 소스코드 회차 S-01; 외부 E-ID와 별도 행으로 식별하고 소스·license를 합치지 않음
 
 ## 제출 대상
