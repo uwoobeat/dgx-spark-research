@@ -79,8 +79,8 @@ images:
     license_review: NOASSERTION for wrapper repository; Apache-2.0 vLLM base
     compressed_layer_bytes: 14180175179
     role: required-rollback
-    import_route: quarantine-oci
-    quarantine_registration: true
+    import_route: manual-oci-import
+    quarantine_registration: false
   - id: glm53-vllm-official-day0
     ref: docker.io/vllm/vllm-openai@sha256:905c02933be6021301db2dc284e24e3727467aa3a0f63b41d609885778a07bce
     source_tag: vllm/vllm-openai:glm53-flash-arm64-cu130
@@ -101,8 +101,8 @@ images:
     license_review: NOASSERTION for wrapper repository; Apache-2.0 vLLM base
     compressed_layer_bytes: 14204524092
     role: required
-    import_route: quarantine-oci
-    quarantine_registration: true
+    import_route: manual-oci-import
+    quarantine_registration: false
   - id: litellm
     ref: ghcr.io/berriai/litellm@sha256:2d0f10790c6d9a72f240465ebe755987c40bdd0795cba9f57cbebc7ddc6e5c6f
     source_index_digest: sha256:a53a7d3ffebede1925bd3ee8a21e4a7b9b63e2e68ec883af136edcccb6eeb82c
@@ -119,25 +119,25 @@ sources:
   - repo: https://github.com/eugr/spark-vllm-docker.git
     commit: e9cf3596c4d8ecd677056b1d14eb5dda16c1f86e
     license: MIT
-    import_route: separate-external-repository-reference-submission
-    quarantine_registration: false
+    import_route: quarantine-repository-round
+    quarantine_registration: true
   - repo: https://github.com/local-inference-lab/vllm.git
     branch: dev/infernal-invocation
     commit: b5f995e73e6b7fe27c9927477e277a151ebcc9e9
     license: Apache-2.0
     role: eugr-b12x-source-no-glm53-at-pin
-    import_route: separate-external-repository-reference-submission
-    quarantine_registration: false
+    import_route: quarantine-repository-round
+    quarantine_registration: true
   - repo: https://github.com/tonyd2wild/GLM-5.3-Flash-NVFP4-DFlash2-2x-DGX-Spark.git
     commit: 050081dc41ce6edd4d3f15fa19dc3410ba4210e3
     license: NOASSERTION
-    import_route: separate-external-repository-reference-submission
-    quarantine_registration: false
+    import_route: quarantine-repository-round
+    quarantine_registration: true
   - repo: https://github.com/NVIDIA/dgx-spark-playbooks.git
     commit: 347390338d67262394710802d92b4e48bfc6001c
     license: Apache-2.0-with-third-party-notices
-    import_route: separate-external-repository-reference-submission
-    quarantine_registration: false
+    import_route: quarantine-repository-round
+    quarantine_registration: true
 source_files:
   - repo_commit: e9cf3596c4d8ecd677056b1d14eb5dda16c1f86e
     path: run-recipe.sh

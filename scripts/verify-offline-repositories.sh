@@ -249,8 +249,8 @@ while IFS=$'\t' read -r stable_id repository pin reference_role license_status q
   [[ -z "${seen_ids[$stable_id]:-}" ]] || die "duplicate stable ID in manifest: $stable_id"
   [[ "$repository" =~ ^https://github\.com/.+\.git$ ]] || die "$stable_id is not a GitHub .git URL"
   [[ "$pin" =~ ^[0-9a-f]{40}$ ]] || die "$stable_id pin is not a 40-character commit"
-  [[ "$quarantine_registration" = no ]] || die "$stable_id must not use quarantine registration"
-  [[ "$import_route" = separate-external-repository-reference-submission ]] || \
+  [[ "$quarantine_registration" = yes ]] || die "$stable_id must use the repository quarantine round"
+  [[ "$import_route" = quarantine-repository-round ]] || \
     die "$stable_id has an invalid import route"
   seen_ids[$stable_id]=1
   manifest_urls[$stable_id]="$repository"

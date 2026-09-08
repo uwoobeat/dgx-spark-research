@@ -25,7 +25,7 @@
 1. DGX Spark 출고·초기 설정 후 이미 설치되어 있는 하드웨어 지원 요소와 소프트웨어는 무엇인가?
 2. 폐쇄망으로 추가 반입해야 할 Docker/OCI 이미지, 바이너리, OS 패키지, Python wheel, 모델 파일, 설정 파일은 무엇인가?
 3. 각 아티팩트는 ARM64/aarch64 및 DGX Spark의 CUDA/드라이버 조합에서 실행 가능한가?
-4. 인터넷 연결 PC에서 무엇을 내려받아 어떤 체크섬과 라이선스 정보를 남기고, quarantine.yethangul.kr 신청 및 승인 후 CD로 어떻게 옮기는가?
+4. 인터넷 연결 PC에서 무엇을 내려받아 어떤 체크섬과 라이선스 정보를 남기고, 조직 승인 반입 포털(`QUARANTINE_BASE_URL`) 신청 및 승인 후 허용된 물리 매체로 어떻게 옮기는가?
 5. 두 DGX Spark 사이의 네트워크를 어떻게 구성하고, vLLM 멀티노드 `tp=2`를 어떤 방식으로 실행하는가?
 6. vLLM 공식 지원, 미병합 PR, 커뮤니티 패치, 별도 저장소 방식 사이의 차이와 위험은 무엇인가?
 7. LiteLLM을 어떻게 연결하고 헬스 체크, 기능 검증, 성능 확인, 재시작, 로그 수집, 롤백을 수행하는가?
@@ -87,12 +87,12 @@
 - 온라인 스테이징 단계와 폐쇄망 설치 단계를 명령어와 디렉터리 기준으로 완전히 분리한다.
 - 반입 BOM에는 이름, 정확한 버전/commit, 아키텍처, 원본 URL/registry, 파일명, 크기, SHA-256, 라이선스, 의존 대상, 사용 목적, 필수/선택 구분을 둔다.
 - OCI 이미지는 폐쇄망에서 load 가능한 archive로 준비하고, 모델은 remote code를 포함한 완전한 snapshot manifest로 고정한다.
-- 모델 snapshot은 크기와 무관하게 quarantine.yethangul.kr에 등록하거나 OCI image에 포함하지 않는다. DS4F, GLM target, DFlash2 drafter를 모델별 한 행으로 별도 모델 반입 신청서에 기재하고, 파일별 source inventory와 실제 payload SHA-256 manifest를 첨부한다.
-- 포털에는 모델 weight/snapshot을 포함하지 않은 ARM64 runtime OCI image만 신청한다. 모델 파일을 RAW 행으로 변환하거나 5 GB 제한 회피를 위해 분할 등록하지 않는다.
-- GitHub 등 외부 repository archive는 포털에 신청하지 않는다. 폐쇄망 실행에 필요한 repository 기반 launcher, patch, recipe, 검증 절차는 검토 가능한 독립 런북 문서와 최소 로컬 자산으로 정리하고 별도 문서 반입 절차를 따른다.
+- 모델 snapshot은 크기와 무관하게 조직 승인 반입 포털에 등록하거나 OCI image에 포함하지 않는다. DS4F, GLM target, DFlash2 drafter를 모델별 한 행으로 별도 모델 반입 신청서에 기재하고, 파일별 source inventory와 실제 payload SHA-256 manifest를 첨부한다.
+- 포털 회차는 두 개로 분리한다. 기존 회차는 성공한 ARM64 runtime OCI와 실행 필수 개별 코드·wheel을 유지하고, 별도 회차는 외부 및 자체 repository 소스코드만 신청한다. 대형 GLM OCI 2개는 모델과 함께 수동 반입한다. 모델 파일을 RAW 행으로 변환하거나 포털 파일 크기 제한 회피를 위해 분할 등록하지 않는다.
+- GitHub 등 외부 repository와 자체 repository는 고정 commit archive로 소스코드 전용 포털 회차에 신청한다. 기존 이미지·코드 회차와 혼합하지 않는다. 외부 원문과 자체 작성 자산의 provenance 및 승인 증빙은 항목별로 구분한다.
 - Python 패키지는 전이 의존성을 포함한 ARM64 wheelhouse를 준비한다. wheel이 없어 소스 빌드가 필요하면 compiler/toolchain과 소스 tarball도 BOM에 포함한다.
-- CD 용량과 파일 크기를 고려해 매체 분할 계획, 매체별 manifest, 전체/개별 체크섬 검증 절차를 제공한다.
-- quarantine.yethangul.kr의 실제 신청 필드와 정책은 근거 없이 추정하지 않는다. 공개 자료 또는 사용자가 제공한 양식이 없으면 범용 제출 패키지와 확인 필요 항목으로 구분한다.
+- 허용된 물리 매체의 용량과 파일 크기를 고려해 매체 분할 계획, 매체별 manifest, 전체/개별 체크섬 검증 절차를 제공한다.
+- 조직 승인 반입 포털의 실제 신청 필드와 정책은 근거 없이 추정하지 않는다. 공개 자료 또는 사용자가 제공한 양식이 없으면 범용 제출 패키지와 확인 필요 항목으로 구분한다.
 - 비밀키, 토큰, 내부 IP, 비밀번호를 문서·스크립트·이미지에 포함하지 않는다.
 - 로컬 포털 인증정보는 Git에서 제외된 `.env`에만 저장하고 파일 모드를 `0600`으로 유지한다. 화면 확인에 사용할 수 있으나 신청 제출·승인 요청·아티팩트 수집 실행은 사용자의 별도 승인 없이 수행하지 않는다.
 

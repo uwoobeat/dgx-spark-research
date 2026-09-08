@@ -2,7 +2,7 @@
 
 확인일은 모두 2026-09-03 KST다. GitHub/Hugging Face의 시점 의존 상태는 URL과 commit/revision을 함께 사용한다.
 
-이 ledger는 **조사 근거와 upstream provenance 목록**이며 그 자체가 검역 포털 입력 목록은 아니다. GitHub repository/tree/PR/issue URL은 별도 참고자료 문서의 출처로만 사용한다. 포털에는 모델 없는 OCI와 폐쇄망 실행에 필요한 개별 파일만 각 SHA-256으로 등록하고, DS4F target·GLM target·DFlash2 drafter는 모두 별도 모델 반입 신청으로 처리한다.
+이 ledger는 **조사 근거와 upstream provenance 목록**이며 그 자체가 검역 포털 입력 목록은 아니다. 2026-09-08 결정: 기존 이미지·코드 회차와 repository 소스 전용 회차를 분리한다. 모델 3개와 대형 GLM OCI 2개는 수동 반입한다. repository/tree URL은 고정 source archive 출처이고 PR/issue URL은 보조 조사 근거다.
 
 ## NVIDIA DGX Spark
 
@@ -68,16 +68,16 @@
 | https://github.com/elsung/dgx-spark-deepseek-v4-flash | 초기 DS4F TP2 결과; 비교 참고 |
 | https://github.com/Weschera/DeepSeek-V4-Flash-0731-DSpark-2x-DGX-Spark | DSpark TP2 community 검증; 성능 수치 재현 필요 |
 
-## LiteLLM과 검역 포털
+## LiteLLM과 반입 경로
 
 | 출처 | 뒷받침하는 내용 |
 |---|---|
 | https://docs.litellm.ai/docs/providers/vllm | `hosted_vllm/` prefix와 proxy `api_base` |
 | https://github.com/BerriAI/litellm/releases/tag/v1.99.1 | pinned LiteLLM release |
 | https://pypi.org/project/PyYAML/6.0.3/ | eugr host-side recipe parser용 CPython 3.12 ARM64 wheel provenance |
-| https://quarantine.yethangul.kr | 인증 후 실제 UI/API에서 확인한 manager, Linux/arm64 Docker·Crane target, RAW 필드와 5GB 제한, 6단계 처리, artifact 상태, SBOM/scan, 반입승인·유해성점검 문서. 2026-09-07 09:08:20 KST에 회차 `3cd1d976-6339-48db-93f6-f0498f7c387f`의 `DOCKER linux/arm64` + `RAW raw-any`, `defaultedTypes=[]`, 10개 입력, `status=RUNNING`, `artifactCount=0`을 확인. 기존 `cdf233bb-8c10-4569-ba1d-7a941cf2ce70`은 같은 날 포털 목록에서 확인되지 않았으며 부재 원인은 미확인 |
-| 사용자 제공 포털 운영 변경, 2026-09-03 | 10분 수집 timeout으로 14 GB급 GLM OCI 2개가 실패한 후 timeout을 20분으로 패치. 약 15 GB급 모델 미포함 runtime OCI는 포털 범위에 유지 |
-| 사용자 제공 내부 운용 정책, 2026-09-03 | 모델 snapshot은 크기와 무관하게 포털/OCI에서 제외: DS4F target, GLM target, DFlash2 drafter를 별도 모델 신청. GitHub repository archive는 포털 대상이 아니며 실행 필수 개별 파일만 검역하고 upstream 참고자료는 별도 문서로 제출 |
+| [반입 포털 공개 체크리스트](08-quarantine-portal.md) | 특정 포털 구현과 무관한 제출 경계와 검증 계약: 모델 없는 ARM64 OCI 4개, 최소 RAW 6개, 명시적 `linux/arm64` 확인, SBOM·license·malware·checksum 증빙 보존 |
+| 로컬 비공개 운영 기록 (`state/import-portal-notes.md`, Git 제외) | 실제 포털 주소, 제출 식별자, 확인 시각·상태, 입력 제한과 재시도 이력의 현장 근거. 인증 비밀은 포함하지 않으며 공개 문서의 출처나 반입 payload로 배포하지 않음 |
+| 프로젝트 artifact routing 결정 | 2026-09-08 D-015: 포털은 기존 이미지·코드 회차와 repository 소스코드 회차의 두 개다. 모델과 대형 GLM OCI는 수동 반입하며 repository는 수동 목록에서 제외한다. |
 
 ## OCI manifest 검증법
 

@@ -1,11 +1,44 @@
+# 수동 반입 링크 분류 (기준일: 2026-09-08 KST)
+# 다운로드 안내: 기존 manifest의 고정 버전을 사용한다. 이번 편집에서는 원격 다운로드 가능 여부를 재확인하지 않았다.
+# OCI: registry에서 이미지 전체 layer를 수집해 폐쇄망에서 load 가능한 archive로 준비한다.
+# 모델: Hugging Face의 고정 revision 전체 snapshot을 받는다(가중치·config·tokenizer·remote code 등).
+# 이 수동 목록은 모델 3건과 대형 OCI 2건만 포함한다.
+# 실제 수집·제출은 승인 절차에 따라 수행하며, 받은 파일의 SHA-256은 수집 후 기록한다.
+#
+# 기존 회차 유지(수집 성공): eugr B12X OCI, LiteLLM OCI, RAW R-01~R-06
+# 위 성공 아티팩트는 기존 회차 payload를 그대로 반입하므로 이 별도 링크 목록에 다시 넣지 않는다.
+#
+# 수동 OCI 반입: GLM 대형 OCI 2개. 포털 재신청 회차를 만들지 않는다.
+# GLM DFlash2 실행 이미지 (sm121-v11-dflash2) | 유형: Docker/OCI 이미지 | 아키텍처: linux/arm64
+# 다운로드 소스(registry image reference):
+ghcr.io/tonyd2wild/vllm-glm53-flash@sha256:4def0ef644cb2e9814136dcffd5e385e21bc594f48f3b292234051904abe85a6
+# 수집 방법: 승인된 온라인 staging에서 위 digest로 이미지 전체를 pull/save 또는 승인된 OCI 수집 도구로 archive 생성.
+# 아래 URL은 registry manifest 메타데이터 확인용이며, 브라우저에서 받는 이미지 TAR 파일이 아니다.
+https://ghcr.io/v2/tonyd2wild/vllm-glm53-flash/manifests/sha256:4def0ef644cb2e9814136dcffd5e385e21bc594f48f3b292234051904abe85a6
+# GLM non-DFlash2 rollback 실행 이미지 (sm121-v8) | 유형: Docker/OCI 이미지 | 아키텍처: linux/arm64
+# 다운로드 소스(registry image reference):
+ghcr.io/tonyd2wild/vllm-glm53-flash@sha256:d77d375c742fc54f436dec5108b440f58f021bc6600052bf0e8fe5840357e78f
+# 수집 방법: 승인된 온라인 staging에서 위 digest로 이미지 전체를 pull/save 또는 승인된 OCI 수집 도구로 archive 생성.
+# 아래 URL은 registry manifest 메타데이터 확인용이며, 브라우저에서 받는 이미지 TAR 파일이 아니다.
+https://ghcr.io/v2/tonyd2wild/vllm-glm53-flash/manifests/sha256:d77d375c742fc54f436dec5108b440f58f021bc6600052bf0e8fe5840357e78f
+
+# 별도 모델 반입: 모델별 한 행 신청 및 파일별 source inventory 첨부
+# M-01 DS4F 기본 | 유형: 모델 snapshot | 다운로드 위치: Hugging Face
+# 고정 revision 전체 파일 목록:
 https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731/tree/7872f01b1d1fe23eabc4c98b48bffcef5a386062
+# 개별 파일 다운로드 URL: manifests/models/ds4f-base.raw.tsv의 URL 열(resolve/<revision>/...)
+# 해당 inventory의 모든 파일을 상대 경로대로 저장한다. 위 tree 페이지 HTML만 저장한 것은 모델 payload가 아니다.
+# M-02 GLM NVFP4 target | 유형: 모델 snapshot | 다운로드 위치: Hugging Face
+# 고정 revision 전체 파일 목록:
 https://huggingface.co/RedHatAI/GLM-5.3-Flash-NVFP4/tree/36c184c6cda000a481711306df5adde42f63321a
+# 개별 파일 다운로드 URL: manifests/models/glm53-redhat-nvfp4.raw.tsv의 URL 열(resolve/<revision>/...)
+# 해당 inventory의 모든 파일을 상대 경로대로 저장한다. 위 tree 페이지 HTML만 저장한 것은 모델 payload가 아니다.
+# M-03 DFlash2 drafter | 유형: 모델 snapshot | 다운로드 위치: Hugging Face
+# 고정 revision 전체 파일 목록:
 https://huggingface.co/incoai/GLM-5.3-Flash-DFlash2/tree/bf582e4eacc1810f76656d1811693ff6c6737d2a
-https://github.com/eugr/spark-vllm-docker/tree/e9cf3596c4d8ecd677056b1d14eb5dda16c1f86e
-https://github.com/local-inference-lab/vllm/tree/b5f995e73e6b7fe27c9927477e277a151ebcc9e9
-https://github.com/tonyd2wild/GLM-5.3-Flash-NVFP4-DFlash2-2x-DGX-Spark/tree/050081dc41ce6edd4d3f15fa19dc3410ba4210e3
-https://github.com/NVIDIA/dgx-spark-playbooks/tree/347390338d67262394710802d92b4e48bfc6001c
-https://github.com/vllm-project/vllm/tree/8f8cc414d1c7648aad8808ba94e7c7fb1b6a72c2
-https://github.com/vllm-project/vllm/tree/402ad45492fe95b5d43d5369c3f156fa6efd5a16
-https://github.com/BerriAI/litellm/tree/10f4033437df30b91b5dbf2b64711d0a8683fc52
-https://github.com/uwoobeat/dgx-spark-research/tree/00083298bfa21694b14abd482640404c890b75df
+# 개별 파일 다운로드 URL: manifests/models/glm53-dflash2-draft.raw.tsv의 URL 열(resolve/<revision>/...)
+# 해당 inventory의 모든 파일을 상대 경로대로 저장한다. 위 tree 페이지 HTML만 저장한 것은 모델 payload가 아니다.
+
+
+# 레포지터리 소스코드는 수동 반입 대상이 아니다.
+# 별도 포털 회차 입력 목록: manifests/quarantine-repository-sources.tsv

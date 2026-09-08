@@ -52,7 +52,7 @@ export DGX_AGENT_MODE=internal
 - DGX Spark 또는 그 관리망에 SSH 접속, 포트 검사, 파일 복사, 서비스 변경
 - 내부 IP, 호스트명, 사용자명, SSH 키, 토큰 또는 실환경 비밀번호를 저장소에 기록
 - 모델 snapshot/weight를 포털 RAW 항목이나 OCI layer에 포함
-- GitHub repository archive 자체를 포털 반입 항목으로 제출하거나 repository에 대한 SBOM이 OCI SBOM을 대체한다고 취급
+- repository 소스코드 회차에 runtime OCI·모델을 혼합하거나 repository 검사 결과가 OCI SBOM을 대체한다고 취급
 - 조사 결과만으로 DGX 실기 acceptance, RDMA/NCCL 성능 또는 모델 기동 성공을 `통과` 처리
 - 검역 승인 전 자산을 내부망으로 이동했다고 가정
 

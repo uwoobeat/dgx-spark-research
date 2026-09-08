@@ -1,0 +1,11 @@
+item_id	item_type	artifact_ref	target	collection_result	planned_route	planned_action	security_or_scan_note	failure_reason
+ds4f-base-vllm	OCI	docker.io/eugr/spark-vllm-b12x@sha256:7dc02f162929943ba2e14514066ed2a04bb7e9ed3592d4eb460ebcbb1f8376bd	DOCKER linux/arm64	COLLECTION_SUCCESS	current-quarantine-round	retain-and-import-after-security-review	검역 수집 성공; 검역 이상(CVE inventory) 1건; 보안 처분 대기	-
+glm53-vllm-dflash2	OCI	ghcr.io/tonyd2wild/vllm-glm53-flash@sha256:4def0ef644cb2e9814136dcffd5e385e21bc594f48f3b292234051904abe85a6	DOCKER linux/arm64	COLLECTION_FAILED	manual-oci-import	collect-manually-after-approval	기존 회차 수집 실패; 2026-09-08 결정에 따라 대형 OCI 수동 반입	crane pull failed (exit 1): HTTP/2 stream error; PROTOCOL_ERROR
+glm53-vllm-sm121	OCI	ghcr.io/tonyd2wild/vllm-glm53-flash@sha256:d77d375c742fc54f436dec5108b440f58f021bc6600052bf0e8fe5840357e78f	DOCKER linux/arm64	COLLECTION_FAILED	manual-oci-import	collect-manually-after-approval	기존 회차 수집 실패; 2026-09-08 결정에 따라 대형 OCI 수동 반입	crane pull failed (exit 1): HTTP/2 stream error; PROTOCOL_ERROR
+litellm	OCI	ghcr.io/berriai/litellm@sha256:2d0f10790c6d9a72f240465ebe755987c40bdd0795cba9f57cbebc7ddc6e5c6f	DOCKER linux/arm64	COLLECTION_SUCCESS	current-quarantine-round	retain-and-import-after-security-review	검역 수집 성공; 검역 이상(CVE inventory) 1건; 보안 처분 대기	-
+R-01	RAW	R-01	RAW raw-any	COLLECTION_SUCCESS	current-quarantine-round	retain-and-import	검역 결과 정상	-
+R-02	RAW	R-02	RAW raw-any	COLLECTION_SUCCESS	current-quarantine-round	retain-and-import	검역 결과 정상	-
+R-03	RAW	R-03	RAW raw-any	COLLECTION_SUCCESS	current-quarantine-round	retain-and-import	검역 결과 정상	-
+R-04	RAW	R-04	RAW raw-any	COLLECTION_SUCCESS	current-quarantine-round	retain-and-import	검역 결과 정상	-
+R-05	RAW	R-05	RAW raw-any	COLLECTION_SUCCESS	current-quarantine-round	retain-and-import	검역 결과 정상	-
+R-06	RAW	R-06	RAW raw-any	COLLECTION_SUCCESS	current-quarantine-round	retain-and-import	검역 결과 정상	-

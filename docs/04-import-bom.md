@@ -34,10 +34,10 @@ Hugging Face snapshot은 safetensors만 받지 않는다. `config*.json`, tokeni
 | eugr 실행 파일 4개 | `e9cf3596c4d8ecd677056b1d14eb5dda16c1f86e`의 `run-recipe.sh`, `run-recipe.py`, `launch-cluster.sh`, `autodiscover.sh` | MIT | 포털 RAW; 폐쇄망 recipe 해석·2노드 기동에 직접 필요 |
 | GLM top-k patch | `050081dc41ce6edd4d3f15fa19dc3410ba4210e3`의 `docker/sparse_attn_indexer_kpool_sm121.py`, SHA-256 `8a3ecfb0bab2441dd7417ed00a10d142191496149f88e5fe79fcfaea4b160980` | 파일 header Apache-2.0 | 포털 RAW; 24K+ decode crash 방지 |
 | PyYAML ARM64 wheel | `pyyaml-6.0.3-cp312-cp312-manylinux...aarch64.whl`, SHA-256 `9149cad251584d5fb4981be1ecde53a1ca46c891a79788c0df828d2f166bda28` | MIT | 포털 RAW; eugr parser의 외부 `pip` 접속 방지 |
-| eugr, B12X vLLM fork, GLM community repo, NVIDIA playbooks, vLLM PR heads | [외부 repository 목록](../manifests/external-repository-references.tsv)의 고정 commit | 항목별 상이 | 포털 제외; 설계·출처·재빌드 참고자료로 별도 문서 반입 |
-| 이 저장소 | 반입 시점 공개 commit | 자체 산출물 정책 | 포털·외부 repository 참고자료 묶음과 분리하여 자체 repository로 별도 제출 |
+| eugr, B12X vLLM fork, GLM community repo, NVIDIA playbooks, vLLM PR heads | [외부 repository 목록](../manifests/external-repository-references.tsv)의 고정 commit | 항목별 상이 | 소스코드 전용 포털 회차 E-01~E-07 |
+| 이 저장소 | 반입 시점 공개 commit | 자체 산출물 정책 | 소스코드 전용 포털 회차 S-01; 외부 자료와 provenance 분리 |
 
-전체 GitHub repository archive는 크기가 작더라도 포털에 신청하지 않는다. 포털 SBOM 비교 단위로 만들지 않고 [외부 repository 참고자료 제출안](12-external-repository-reference-submission.md)에 따라 별도 처리한다. 포털 RAW 6개 행의 URL·bytes·SHA-256은 `manifests/quarantine-raw-sources.tsv`가 정본이다. vLLM/LiteLLM Python dependency는 runtime image 안에 있고, host 측 추가 wheel은 eugr parser용 PyYAML 하나다.
+전체 GitHub repository archive는 고정 commit으로 소스코드 전용 회차에 신청한다. [외부 repository 참고자료 제출안](12-external-repository-reference-submission.md)에 따라 별도 처리한다. 포털 RAW 6개 행의 URL·bytes·SHA-256은 `manifests/quarantine-raw-sources.tsv`가 정본이다. vLLM/LiteLLM Python dependency는 runtime image 안에 있고, host 측 추가 wheel은 eugr parser용 PyYAML 하나다.
 
 ## B. 범위 제외
 
@@ -82,17 +82,29 @@ DS4F NVFP4 checkpoint, Anemll runtime, 관련 playbook은 별도 파일럿 범�
 
 ## E. 검역 포털 신청 항목
 
-2026-09-03 인증 후 실제 화면에서 범주와 제출 필드를 재확인했다. 범주는 pip, conda, Maven/Gradle, apt/yum, Docker/Crane OCI, npm 계열, cargo, VS Code, JetBrains, RAW다. 본 프로젝트의 포털 신청은 모델 weight가 없는 OCI 4개와 실행 필수 개별 GitHub raw 파일 5개, PyYAML ARM64 wheel 1개에만 사용한다.
+2026-09-08 이후 포털은 기존 OCI·RAW 회차와 별도 repository 소스코드 회차로 나눈다. 대형 GLM OCI는 수동 반입한다. 포털 제품별 manager 이름과 필드 구성은 공개 저장소의 계약으로 고정하지 않고 제출 시 승인된 양식에서 확인한다.
 
-2026-09-07 09:08:20 KST 확인 기준, 이 10건은 포털 회차 `3cd1d976-6339-48db-93f6-f0498f7c387f`에 `DOCKER linux/arm64` + `RAW raw-any`로 생성되어 수집 중이다. API의 `defaultedTypes=[]`를 확인했으므로 Docker target은 기본값이 아니라 명시적 ARM64 선택이다. 생성 직후 artifact 수는 0이며 완료·scan·license·승인 결과는 아직 확정되지 않았다.
+필수 입력은 OCI 4개와 RAW 6개, 합계 10건이다. 제출 화면과 생성 결과 모두에서 `DOCKER linux/arm64` + `RAW raw-any`가 명시적으로 기록됐는지 확인한다. Docker target이 기본 architecture로 대체되지 않았다는 증빙과 최종 수집·scan·license·승인 결과는 Git에서 제외된 비공개 실행 기록에 보존한다.
 
 - OCI: `image@sha256:digest` 형태로 platform manifest를 지정한다.
-- RAW: 외부 URL, 이름, 버전, 목적, license를 기록하며 파일당 5 GB 제한이 있다.
-- 시스템은 수집 후 Syft CycloneDX 1.5 SBOM, license check, ClamAV/Trivy scan과 반입승인·유해성점검 문서를 만든다.
+- RAW: 외부 URL, 이름, 버전, 목적, license를 기록하며 각 파일은 승인된 포털 제한을 충족해야 한다.
+- 승인 절차가 만든 SBOM, license, 악성코드·취약점 검사와 반입 문서를 보존한다.
 - OCI 제출용 목록은 `manifests/quarantine-oci-*.txt`, 개별 실행 파일과 wheel은 `manifests/quarantine-raw-sources.tsv`로 고정한다.
-- 실제 화면과 상태·산출물 세부 내용은 [검역 포털 절차](08-quarantine-portal.md)에 기록했다.
+- 제품별 화면·상태값과 실제 실행 결과는 공개 저장소가 아닌 승인된 비공개 기록에서 관리한다. 공개 절차는 [검역 포털 절차](08-quarantine-portal.md)를 따른다.
 
-DS4F, GLM target, DFlash2 drafter 세 snapshot은 크기와 관계없이 포털에 입력하지 않는다. 세 inventory는 별도 모델 반입 신청 증빙으로만 사용한다. 모델 파일을 RAW 행으로 만들거나 runtime OCI image에 포함하지 않는다. 전체 GitHub repository도 포털 대상이 아니며 별도 참고자료 제출 경로를 따른다.
+DS4F, GLM target, DFlash2 drafter 세 snapshot은 크기와 관계없이 포털에 입력하지 않는다. 세 inventory는 별도 모델 반입 신청 증빙으로만 사용한다. 모델 파일을 RAW 행으로 만들거나 runtime OCI image에 포함하지 않는다. 전체 GitHub repository는 소스코드 전용 포털 회차를 따른다.
+
+### 현행 처리 분류
+
+현재 포털 처리 결과는 최초 신청 정본(OCI 4 + RAW 6)을 변경하지 않고, 수집 결과에 따라 다음처럼 분리한다. 항목별 공개 가능한 결과 분류는 `manifests/quarantine-attempt-result.tsv`와 subset 목록에 두고, 실제 회차 식별자·상세 오류·검사 화면은 현장에서 생성하는 비공개 `state/import-portal-notes.md`에만 둔다.
+
+| 분류 | 대상 | 다음 처리 |
+|---|---|---|
+| 기존 회차 유지 후보 | eugr B12X OCI, LiteLLM OCI, RAW R-01~R-06 | 성공 payload와 manifest를 그대로 보존·반입 후보로 유지. OCI의 CVE 검토/조치 승인이 끝나기 전에는 최종 반입 완료로 표시하지 않음 |
+| 수동 대형 OCI 반입 | GLM `sm121-v11-dflash2` OCI, GLM `sm121-v8` rollback OCI | [수동 OCI 목록](../manifests/manual-oci-import.txt)으로 포털 밖 수동 신청. 동일 digest와 `linux/arm64` target을 재확인하고 모델 미포함 실물 검사를 반복 |
+| 별도 모델 신청 | M-01 DS4F base, M-02 GLM NVFP4, M-03 DFlash2 drafter | [모델별 신청서](10-separate-model-import-application.md)와 source inventory로 각각 한 행씩 신청. 포털 OCI/RAW에 섞지 않음 |
+
+수집 성공과 보안·라이선스·악성코드·취약점 승인 완료는 서로 다른 상태다. “그대로 반입”은 성공 payload의 identity와 checksum을 유지한다는 의미이며, 검사 이상이 있는 OCI는 승인된 예외 또는 조치 결과를 받은 뒤에만 매체에 기록한다.
 
 ## F. 용량 계획
 
@@ -101,4 +113,4 @@ DS4F, GLM target, DFlash2 drafter 세 snapshot은 크기와 관계없이 포털�
 - 필수 images(rollback 포함): 약 40.1 GB compressed
 - source/manifest와 filesystem overhead 포함 1회 반입 예상: **약 410–430 GB**
 
-700 MB CD만 허용하면 600장 이상, 4.7 GB DVD면 95장 안팎, 100 GB BDXL이면 5장 안팎이다. 이는 포맷 overhead와 여분을 포함한 대략치다. 매체 정책을 확정하지 않고 굽기 계획을 확정하면 안 된다.
+매체 수는 승인된 매체의 실사용 용량으로 계산하며 포맷 overhead와 여분을 포함한다. 매체 종류와 파일시스템 정책을 확정하지 않고 기록 계획을 확정하면 안 된다.

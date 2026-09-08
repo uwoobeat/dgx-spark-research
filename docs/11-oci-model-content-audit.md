@@ -4,7 +4,7 @@
 
 ## 결론과 현재 gate
 
-포털에 신청할 네 runtime image는 **모델 checkpoint/snapshot을 넣지 않은 image**로 취급한다. 2026-09-03의 외부망 사전감사는 다음 근거를 모두 통과했다.
+반입할 네 runtime image는 **모델 checkpoint/snapshot을 넣지 않은 image**로 취급한다. 2026-09-03의 외부망 사전감사는 다음 근거를 모두 통과했다.
 
 - 고정된 `linux/arm64` manifest와 config digest를 확인했다.
 - OCI config build history에 Hugging Face snapshot download, `git lfs`, `from_pretrained`, `model.safetensors`, GGUF 또는 PyTorch checkpoint를 image에 넣는 명령이 없었다.
@@ -84,7 +84,7 @@ DS4F는 `vllm serve /models/ds4f`, GLM은 `vllm serve /models/glm53`와 `model=/
 
 ## 검역 산출물 SBOM 및 실물 검사 절차
 
-GitHub repository 자체를 검역 포털 항목으로 올리거나 repository에 대해 형식적인 SBOM을 만들지 않는다. 위 source URL은 외부망 조사 증거일 뿐이다. 검역 대상은 네 OCI image이고, 각 image의 SBOM은 해당 immutable ARM64 manifest/config digest와 1:1로 결속되어야 한다. 외부 repository 참고자료는 별도 문서 반입 절차, 이 저장소의 자체 runbook·script는 저장소 자체의 별도 반입 절차를 따른다.
+2026-09-08 결정에 따라 GitHub source는 소스코드 전용 포털 회차로 제출한다. 네 OCI image는 기존 회차 성공분 2개와 수동 반입 GLM 2개로 나누며, 각 image의 SBOM은 해당 immutable ARM64 manifest/config digest와 1:1로 결속한다. repository 검사 결과는 image 검사를 대체하지 않는다.
 
 승인된 OCI archive를 스테이징 Docker에 load한 뒤 아래 명령을 각 image에 실행한다. stdout/stderr를 image별 감사 로그로 보존하고 로그 자체의 SHA-256도 매체 manifest에 기록한다.
 

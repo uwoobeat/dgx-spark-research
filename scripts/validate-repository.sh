@@ -38,8 +38,15 @@ required_files=(
   docs/source-ledger.md
   manifests/artifacts.lock.yaml
   manifests/external-repository-references.tsv
+  manifests/quarantine-attempt-result.tsv
   manifests/quarantine-oci-required.txt
+  manifests/quarantine-oci-successful.txt
+  manifests/quarantine-oci-retry.txt
   manifests/quarantine-raw-sources.tsv
+  manifests/quarantine-repository-sources.tsv
+  manifests/manual-oci-import.txt
+  docs/16-final-import-plan.md
+  scripts/validate-final-import-plan.py
   manifests/separate-model-import.tsv
   configs/cluster.env.example
   configs/node.env.example
@@ -160,6 +167,26 @@ else
   fi
 fi
 pass 'secret files are ignored; local .env permission and private-key leak gates pass'
+
+portal_url_pattern='https?://[^[:space:]]*quarantine[^[:space:]]*'
+round_uuid_pattern='[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}'
+if test -d .git; then
+  if git grep -Il -E -- "$portal_url_pattern|$round_uuid_pattern" -- \
+      .env.example AGENTS.md INTERNAL_AGENT.md README.md SECURITY.md \
+      THIRD_PARTY_NOTICES.md configs docs manifests scripts third_party \
+      >/dev/null 2>&1; then
+    fail 'organization-specific portal hostname or live round UUID found in tracked text'
+  fi
+else
+  if grep -RIlE --exclude-dir=.git -- \
+      "$portal_url_pattern|$round_uuid_pattern" \
+      .env.example AGENTS.md INTERNAL_AGENT.md README.md SECURITY.md \
+      THIRD_PARTY_NOTICES.md configs docs manifests scripts third_party \
+      >/dev/null 2>&1; then
+    fail 'organization-specific portal hostname or live round UUID found in public repository candidate text'
+  fi
+fi
+pass 'organization-specific portal hostname and live round UUID are absent'
 
 ./scripts/audit-import-routing.sh >/dev/null || fail 'import-route separation audit failed'
 pass 'OCI, model, repository-reference, and minimal RAW import routes stay separated'

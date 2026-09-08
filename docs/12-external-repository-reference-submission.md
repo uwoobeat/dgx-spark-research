@@ -1,16 +1,16 @@
-# 외부 repository 참고자료 별도 제출
+# 레포지터리 소스코드 전용 반입회차
 
-기준일: 2026-09-03 KST
+반입 경로 결정: 2026-09-08 KST. upstream pin·license 조사 기준은 기존 기록을 유지한다.
 
 ## 범위와 경계
 
-이 문서는 GitHub의 **외부 upstream repository 전체 자료**를 설계 검토, 출처 추적, 장애 분석, 필요 시 재빌드에 참고하기 위한 별도 제출 목록이다. repository archive는 `quarantine.yethangul.kr`에 등록하지 않으며 포털 SBOM 생성·비교 단위로 취급하지 않는다.
+이 문서는 GitHub의 **외부 upstream repository 전체 자료**를 설계 검토, 출처 추적, 장애 분석, 필요 시 재빌드에 참고하기 위한 별도 제출 목록이다. repository archive는 기존 이미지·코드 회차와 분리된 소스코드 전용 포털 회차에 등록한다. 외부 E-01~E-07과 자체 S-01의 8건이며 입력 정본은 [quarantine-repository-sources.tsv](../manifests/quarantine-repository-sources.tsv)다.
 
 다음 세 묶음과 명확히 분리한다.
 
-- 포털 OCI/RAW: 모델이 없는 runtime image 4개와 실행 필수 개별 파일 5개, PyYAML wheel 1개
-- 모델 별도 신청: DS4F, GLM target, DFlash2 drafter snapshot 각 1행
-- 자체 작성 repository: 설치·운영 harness와 문서를 포함한 이 repository의 반입 시점 공개 commit; 외부 upstream 참고자료 bundle에 넣지 않음
+- 기존 포털 OCI/RAW 회차: 성공 runtime image 2개와 실행 필수 개별 파일 5개, PyYAML wheel 1개
+- 수동 반입: DS4F, GLM target, DFlash2 drafter snapshot 각 1행과 GLM 대형 OCI 2개
+- 자체 작성 repository: 소스코드 회차 S-01; 외부 E-ID와 별도 행으로 식별하고 소스·license를 합치지 않음
 
 ## 제출 대상
 
@@ -57,11 +57,11 @@ Repository 목록은 이제 실행 stack의 핵심 source를 포함하지만, Gi
 
 GitHub node ID와 PR head commit은 대상을 식별하지만 페이지 내용 전체를 불변으로 만들지는 않는다. 승인된 캡처 시점에 HTML과 GitHub API JSON을 페이지네이션 끝까지 저장하고 각 파일 SHA-256 및 전체 package SHA-256을 계산한 후 manifest의 `PENDING_AFTER_APPROVED_CAPTURE`를 실측값으로 교체한다. Issue는 본문 JSON과 comments JSON, PR은 pull JSON·issue comments·review comments·reviews JSON을 포함한다. 캡처 시각, 응답 URL, page 번호, 확인된 `updated_at`도 companion inventory에 기록한다.
 
-이 5개는 OCI/RAW와 repository archive 어느 쪽도 아니다. `quarantine.yethangul.kr`에 등록하거나 SBOM 대상으로 꾸미지 않고 `separate-external-web-reference-document-submission` 경로로 제출한다. 현재 단계에서는 URL·식별자·용도·route만 정리했으며 실제 페이지 payload를 다운로드하지 않았다.
+2026-09-08 결정에서 이 5개는 보조 조사 근거로 보류한다. 이번 수동 반입 목록이나 추가 회차에 포함하지 않는다. 향후 캡처 반입이 필요하면 기존 소스코드 회차의 첨부 방식과 승인 범위를 먼저 정한다. 현재 단계에서는 URL·식별자·용도·route만 정리했으며 실제 페이지 payload를 다운로드하지 않았다.
 
 ## 별도 제출 패키지
 
-조직의 repository 반입 양식이 확정되면 repository마다 다음을 하나의 증빙 단위로 묶는다.
+소스코드 전용 포털 회차에서 repository마다 다음을 하나의 증빙 단위로 묶는다.
 
 1. repository URL, 40자리 commit, 확인일, 목적
 2. 해당 commit의 파일 목록과 수집 후 전체 archive SHA-256
@@ -72,7 +72,7 @@ GitHub node ID와 PR head commit은 대상을 식별하지만 페이지 내용 �
 
 승인 전에는 mutable branch archive나 `main`의 ZIP을 최종 payload로 채택하지 않는다. 제출 담당자가 허용한 형식으로 commit 고정 archive 또는 bundle을 만든 뒤 실제 파일 SHA-256을 확정한다. 포털에서 생성되지 않은 repository SBOM을 임의로 포털 SBOM처럼 표시하거나 비교 결과로 사용하지 않는다.
 
-repository는 OCI가 아니며 이 경로에서 SBOM 생성·비교 대상이라고 가정하지 않는다. 제출 증빙의 archive SHA-256, 아래 파일 트리 manifest, license 검토 기록은 repository 무결성과 provenance를 위한 것이고 포털 SBOM을 모사하거나 대체하지 않는다.
+repository는 소스 archive이며 포털에서 실제 생성한 source scan/SBOM·license 결과를 수령한다. source SBOM은 OCI SBOM을 대신하지 않는다. 제출 증빙의 archive SHA-256, 아래 파일 트리 manifest, license 검토 기록은 repository 무결성과 provenance를 위한 것이고 포털 SBOM을 모사하거나 대체하지 않는다.
 
 ## 폐쇄망 배치 구조
 
@@ -107,7 +107,7 @@ Git metadata가 있으면 검증기는 `HEAD`가 pin과 같은지, tracked 파�
 
 ## 수집 후 오프라인 검증 gate
 
-현재 외부망 조사 단계에서는 upstream을 다운로드하거나 위 경로를 채우지 않는다. repository 별도 반입 승인 후 외부 스테이징에서 고정 commit을 수집하고 `.source-url` 및 archive 방식이면 `.source-commit`을 기록한 다음, 명시적 수집 승인 상태에서 tree manifest를 만든다.
+소스코드 회차에서 고정 archive를 수집·검사하고 승인된 payload를 외부 스테이징에 배치한 뒤 `.source-url` 및 archive 방식이면 `.source-commit`을 기록한 다음, 명시적 수집 승인 상태에서 tree manifest를 만든다.
 
 ```bash
 # 온라인 스테이징 호스트; 승인된 E-01을 배치한 뒤, 네트워크/SSH를 쓰지 않는 로컬 명령
@@ -136,8 +136,8 @@ DGX_AGENT_MODE=external REPOSITORY_REFERENCE_COLLECTION_APPROVED=yes \
 
 ## 남은 승인 gate
 
-- repository 전체 자료에 적용되는 공식 별도 반입 양식과 검사 주체
+- repository 소스코드 회차의 수집 결과·검사 주체·최종 승인
 - E-03 root license `NOASSERTION` 처리 방식
 - archive 또는 Git bundle 중 허용 형식과 최대 매체 크기
-- 외부 원문과 자체 작성 repository에 부여할 각각의 승인번호·보관 위치
+- 같은 소스코드 회차 안에서 외부 원문과 자체 작성 repository의 항목별 승인 증빙·보관 위치
 - GitHub PR·Issue 토론을 오프라인 정적 문서로 제출할 형식과 checksum 기록 위치

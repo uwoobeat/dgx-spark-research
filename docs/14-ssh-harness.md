@@ -77,7 +77,7 @@ export DGX_AGENT_MODE=internal
 # 두 DGX의 ARM64/Docker/GPU/필수 명령 확인
 ./scripts/cluster-harness.sh configs/cluster.env check
 
-# 별도 문서 절차로 내부 반입된 이 저장소를 두 DGX에 배치
+# 소스코드 전용 포털 회차에서 승인되어 내부 반입된 이 저장소를 두 DGX에 배치
 # rank별 node env를 함께 설치하므로 --apply 필수
 ./scripts/cluster-harness.sh configs/cluster.env sync --apply
 

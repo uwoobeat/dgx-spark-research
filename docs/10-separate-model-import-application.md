@@ -6,7 +6,7 @@
 
 ## 정책과 범위
 
-모델 snapshot은 크기와 무관하게 `quarantine.yethangul.kr`에 등록하지 않는다. 이 프로젝트에서는 두 target과 DFlash2 drafter를 별도 반입 문서에 **모델별 한 행**으로 추가한다. 개별 shard가 5 GB 미만인 DS4F와 전체 2.342 GB인 drafter에도 예외를 두지 않는다.
+모델 snapshot은 크기와 무관하게 조직 승인 반입 포털에 등록하지 않는다. 이 프로젝트에서는 두 target과 DFlash2 drafter를 별도 반입 문서에 **모델별 한 행**으로 추가한다. 개별 shard가 작더라도 이 경로 분리 원칙에 예외를 두지 않는다.
 
 | 구분 | 모델 | revision | 정확한 크기 | 역할 |
 |---|---|---|---:|---|
@@ -43,7 +43,7 @@
 | 주요기능 | DS4F 0731 로컬 언어모델 추론 가중치·tokenizer·config | GLM 5.3 Flash compressed-tensors NVFP4 추론 가중치·tokenizer·config | GLM speculative decoding용 draft 가중치·config |
 | 반입목적 | DGX Spark 2대 TP=2 DS4F 운영 baseline | DGX Spark 2대 TP=2 GLM 5.3 Flash 운영 검증 및 서빙 | DGX Spark 2대 TP=2 GLM DFlash2 speculative decoding |
 | 배포범위 | 폐쇄망 DGX Spark 2대, 동일 revision 복제 | 폐쇄망 DGX Spark 2대, 동일 revision 복제 | 폐쇄망 DGX Spark 2대, 동일 revision 복제 |
-| quarantine 등록 | 아니오 | 아니오 | 아니오 |
+| 공통 OCI/RAW 포털 등록 | 아니오 | 아니오 | 아니오 |
 | 원본 해시값 | payload 수령 후 model tree manifest SHA-256 기재 | payload 수령 후 model tree manifest SHA-256 기재 | payload 수령 후 model tree manifest SHA-256 기재 |
 
 `반입일자`, `반입 부서/요청부서`, `담당자`, `검증결과`, 실제 `배포일자`는 신청 조직과 승인 결과를 확인한 뒤 작성한다. 모델명만 쓰고 revision을 생략하지 않는다.
@@ -89,7 +89,7 @@ sha256sum /approved/manifests/<MODEL_ID>.files.tsv
 
 - snapshot의 상대 경로를 보존하며 config, tokenizer, processor, chat template, remote code, index, README/LICENSE를 weight와 함께 넣는다.
 - 실제 binary 대신 Git LFS pointer가 들어 있으면 반입을 중지한다.
-- quarantine 포털의 5 GB 제한 때문에 shard를 분할하지 않는다.
+- 공통 OCI/RAW 포털의 파일 크기 제한을 우회하기 위해 shard를 분할하지 않는다.
 - 허용 매체/filesystem의 단일 파일 제한으로 분할이 요구될 때만 원본 SHA와 part SHA를 함께 기록하고 폐쇄망에서 검증 후 재조립한다.
 - `MEDIA-SET.tsv`, 매체별 SHA manifest, read-back 결과, 승인 문서 번호를 같은 증빙 묶음에 둔다.
 - 모델 payload와 포털 승인 OCI/최소 RAW payload는 신청 경로와 승인 증빙을 구분하되, 최종 매체 전체 manifest에서 함께 추적할 수 있다.

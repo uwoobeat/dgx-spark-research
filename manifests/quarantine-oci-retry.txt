@@ -1,0 +1,1 @@
+# RETIRED 2026-09-08: no third portal round; use manual-oci-import.txt.

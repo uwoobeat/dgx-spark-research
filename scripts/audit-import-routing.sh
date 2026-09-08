@@ -69,6 +69,68 @@ awk '
   }
 ' "$required_oci"
 
+attempt_result="$repo_root/manifests/quarantine-attempt-result.tsv"
+test -f "$attempt_result" || { printf 'missing quarantine attempt result manifest\n' >&2; exit 4; }
+
+awk -F '\t' '
+  NR == 1 {
+    if ($1 != "item_id" || $2 != "item_type" || $3 != "artifact_ref" ||
+        $4 != "target" || $5 != "collection_result" ||
+        $6 != "planned_route" || $7 != "planned_action" ||
+        $8 != "security_or_scan_note" || $9 != "failure_reason") {
+      print "invalid quarantine attempt result header" > "/dev/stderr"
+      bad = 1
+    }
+    next
+  }
+  NF != 9 { printf "invalid attempt result field count at row %d\n", NR > "/dev/stderr"; bad = 1 }
+  $2 == "OCI" && ($3 !~ /@sha256:[0-9a-f]{64}$/ || $4 != "DOCKER linux/arm64") {
+    printf "invalid OCI attempt result at row %d\n", NR > "/dev/stderr"; bad = 1
+  }
+  $2 == "RAW" && ($3 !~ /^R-0[1-6]$/ || $4 != "RAW raw-any") {
+    printf "invalid RAW attempt result at row %d\n", NR > "/dev/stderr"; bad = 1
+  }
+  $2 != "OCI" && $2 != "RAW" { printf "invalid attempt result type at row %d\n", NR > "/dev/stderr"; bad = 1 }
+  $5 != "COLLECTION_SUCCESS" && $5 != "COLLECTION_FAILED" {
+    printf "invalid collection result at row %d\n", NR > "/dev/stderr"; bad = 1
+  }
+  $5 == "COLLECTION_SUCCESS" && $6 != "current-quarantine-round" {
+    printf "successful artifact is not retained in current round at row %d\n", NR > "/dev/stderr"; bad = 1
+  }
+  $5 == "COLLECTION_FAILED" && $6 != "manual-oci-import" {
+    printf "failed artifact is not routed to manual OCI import at row %d\n", NR > "/dev/stderr"; bad = 1
+  }
+  $2 == "OCI" { oci += 1 }
+  $2 == "RAW" { raw += 1 }
+  $5 == "COLLECTION_SUCCESS" { success += 1 }
+  $5 == "COLLECTION_FAILED" { failure += 1 }
+  END {
+    if (NR != 11) { printf "expected header plus 10 attempt result rows, got %d lines\n", NR > "/dev/stderr"; bad = 1 }
+    if (oci != 4 || raw != 6) { printf "expected 4 OCI + 6 RAW attempt result rows, got %d + %d\n", oci, raw > "/dev/stderr"; bad = 1 }
+    if (success != 8 || failure != 2) { printf "expected 8 collection successes + 2 failures, got %d + %d\n", success, failure > "/dev/stderr"; bad = 1 }
+    exit bad
+  }
+' "$attempt_result"
+
+successful_oci="$repo_root/manifests/quarantine-oci-successful.txt"
+retry_oci="$repo_root/manifests/manual-oci-import.txt"
+test -f "$successful_oci" || { printf 'missing successful OCI result manifest\n' >&2; exit 4; }
+test -f "$retry_oci" || { printf 'missing retry OCI result manifest\n' >&2; exit 4; }
+
+expected_successful_oci='docker.io/eugr/spark-vllm-b12x@sha256:7dc02f162929943ba2e14514066ed2a04bb7e9ed3592d4eb460ebcbb1f8376bd
+ghcr.io/berriai/litellm@sha256:2d0f10790c6d9a72f240465ebe755987c40bdd0795cba9f57cbebc7ddc6e5c6f'
+expected_retry_oci='ghcr.io/tonyd2wild/vllm-glm53-flash@sha256:4def0ef644cb2e9814136dcffd5e385e21bc594f48f3b292234051904abe85a6
+ghcr.io/tonyd2wild/vllm-glm53-flash@sha256:d77d375c742fc54f436dec5108b440f58f021bc6600052bf0e8fe5840357e78f'
+
+printf '%b\n' "$expected_successful_oci" | cmp -s - "$successful_oci" || {
+  printf 'successful OCI result manifest does not match the recorded 2-item subset\n' >&2
+  exit 4
+}
+printf '%b\n' "$expected_retry_oci" | cmp -s - "$retry_oci" || {
+  printf 'retry OCI result manifest does not match the recorded 2-item subset\n' >&2
+  exit 4
+}
+
 separate="$repo_root/manifests/separate-model-import.tsv"
 test -f "$separate" || { printf 'missing separate model import manifest\n' >&2; exit 4; }
 
@@ -103,7 +165,7 @@ awk -F '\t' '
   $2 !~ /^https:\/\/github\.com\// || $3 !~ /^[0-9a-f]{40}$/ {
     printf "external repository is not GitHub/commit-pinned at row %d\n", NR > "/dev/stderr"; bad = 1
   }
-  $6 != "no" || $7 != "separate-external-repository-reference-submission" {
+  $6 != "yes" || $7 != "quarantine-repository-round" {
     printf "invalid external repository route at row %d: %s\n", NR, $1 > "/dev/stderr"
     bad = 1
   }
@@ -115,7 +177,7 @@ awk -F '\t' '
 
 while IFS=$'\t' read -r item_id repository rest; do
   [[ "$item_id" == "item_id" ]] && continue
-  if grep -Fq -- "$repository" "${portal_files[@]}"; then
+  if grep -Fq -- "$repository" "$raw"; then
     printf 'ERROR: external repository URL is mixed into quarantine input: %s\n' "$item_id" >&2
     exit 5
   fi
@@ -163,4 +225,5 @@ if [[ -f "$external_web" ]]; then
   done < "$external_web"
 fi
 
-printf 'import routing verified: 4 OCI + 6 minimal RAW use quarantine; 3 models, 7 repository references, and %d web references use separate routes\n' "$web_count"
+python3 "$repo_root/scripts/validate-final-import-plan.py"
+printf 'import routing verified: existing round retains 2 OCI + 6 RAW; source round has 8 repositories; manual import has 3 models + 2 OCI; %d web references deferred\n' "$web_count"

@@ -4,22 +4,21 @@
 
 ## 원칙
 
-인터넷 연결 staging 영역과 폐쇄망 설치 영역을 혼합하지 않는다. 인터넷에서 임의로 받은 파일을 매체에 직접 복사하지 않는다. OCI와 실행 필수 최소 파일은 검역 포털, 세 모델은 별도 모델 신청, 외부 GitHub repository 참고자료와 자체 작성 repository는 서로 구분된 별도 제출 경로를 사용한다. 모든 URL은 branch `main`이 아니라 revision/digest에 고정한다.
+인터넷 연결 staging 영역과 폐쇄망 설치 영역을 혼합하지 않는다. 인터넷에서 임의로 받은 파일을 매체에 직접 복사하지 않는다. 기존 성공 OCI·개별 코드는 기존 회차에 유지하고, 외부·자체 repository는 소스코드 전용 회차, 모델 3개·대형 GLM OCI 2개는 수동 반입으로 구분한다. 모든 URL은 branch `main`이 아니라 revision/digest에 고정한다.
 
 ```text
 upstream registry/raw.githubusercontent/PyPI -> digest·license manifest
-  -> quarantine.yethangul.kr에 모델 없는 OCI와 실행 필수 개별 파일/wheel 등록
+  -> 조직 승인 반입 포털(로컬 `QUARANTINE_BASE_URL`)에 모델 없는 OCI와 실행 필수 개별 파일/wheel 등록
   -> 수집/SBOM/license/AV/vulnerability 검사와 승인 payload 수령
 
 upstream Hugging Face -> revision·파일 목록만 사전 고정
   -> DS4F·GLM target·DFlash2 drafter를 모델별 별도 반입 신청(포털 미등록)
   -> 승인 절차로 snapshot 수집·파일별 SHA-256 생성
 
-외부 GitHub repository의 전체 참고자료 -> repository별 고정 commit 목록
-  -> 포털 SBOM 대상에서 제외하고 별도 문서 반입 절차
+외부 GitHub repository 7건 + 자체 작성 repository 1건 -> 고정 commit ZIP
+  -> 소스코드 전용 포털 회차 -> source 검사·승인 payload
 
-자체 작성 repository -> 반입 시점 공개 commit
-  -> 외부 참고자료 묶음과 분리된 자체 repository 제출 절차
+대형 GLM OCI 2건 -> 고정 platform digest -> 수동 수집·검사·승인
 
 각 경로에서 승인된 payload
   -> 매체별 SHA256 manifest 작성·굽기·read-back 검증
@@ -28,9 +27,9 @@ upstream Hugging Face -> revision·파일 목록만 사전 고정
 
 ## 1. 로컬 인증정보
 
-포털 계정은 저장소의 `.env`에만 있고 파일 모드는 `0600`이다. `.env`는 `.gitignore` 대상이며 Git, 문서, 화면 캡처, shell history에 값을 복사하지 않는다. `.env.example`만 공유한다.
+포털 URL과 계정은 저장소의 `.env`에 `QUARANTINE_*` 변수로만 두고 파일 모드는 `0600`으로 유지한다. `.env`는 `.gitignore` 대상이며 Git, 문서, 화면 캡처, shell history에 값을 복사하지 않는다. placeholder만 있는 `.env.example`만 공유한다.
 
-CLI로 로그인·신청을 자동화하지 않는다. 2026-09-07 사용자 승인으로 `OCI 4 + RAW 6 = 10건`을 제출했고, 09:08:20 KST 확인 기준 회차 `3cd1d976-6339-48db-93f6-f0498f7c387f`이 `DOCKER linux/arm64` + `RAW raw-any`로 수집 중이다. API 응답은 `defaultedTypes=[]`, `status=RUNNING`, `artifactCount=0`이었다. 포털 신청과 별도 모델 신청은 서로 독립된 경로이며, 추가 회차·재시도·상태 변경은 목적, license와 manifest를 검토한 뒤 사람이 승인해 수행한다.
+CLI로 로그인·신청을 자동화하지 않는다. 포털 입력은 `OCI 4 + RAW 6 = 10건`이며 생성 전후에 `DOCKER linux/arm64` + `RAW raw-any`가 명시됐는지 확인한다. 포털 신청과 별도 모델 신청은 서로 독립된 경로이며, 제출·재시도·상태 변경은 목적, license와 manifest를 검토한 뒤 승인된 절차로 수행한다. 실제 회차 식별자·시각·상태와 처리 이력은 `state/` 또는 조직이 지정한 비공개 기록에만 둔다.
 
 ## 2. upstream identity 재확인
 
@@ -79,7 +78,7 @@ DS4F, GLM target, DFlash2 drafter 세 모델은 크기와 무관하게 포털에
 6. 신청서의 payload manifest SHA 칸을 확정하고 승인된 payload만 매체에 기록한다.
 7. 폐쇄망에서 파일별 manifest를 검증한 뒤 두 노드의 동일 경로로 배치한다.
 
-파일 분할은 quarantine의 5 GB 제한 대응책이 아니다. 승인된 매체나 filesystem의 단일 파일 한계 때문에 담당자가 요구한 경우에만 다음 도구를 사용하고, 원본 SHA와 part SHA를 모두 별도 신청 증빙에 남긴다.
+파일 분할은 공통 OCI/RAW 포털의 파일 크기 제한을 우회하는 수단이 아니다. 승인된 매체나 filesystem의 단일 파일 한계 때문에 담당자가 요구한 경우에만 다음 도구를 사용하고, 원본 SHA와 part SHA를 모두 별도 신청 증빙에 남긴다.
 
 ```bash
 ./scripts/split-large-file.sh model-00001-of-00010.safetensors ./parts
@@ -92,12 +91,17 @@ DS4F, GLM target, DFlash2 drafter 세 모델은 크기와 무관하게 포털에
 
 ## 5. OCI image 신청
 
-Docker 또는 Crane 탭에서 OS `Linux`, arch `arm64`를 선택하고 [BOM](04-import-bom.md)의 platform manifest ref를 그대로 입력한다. 인증된 화면의 client는 full `image@sha256:digest`를 한 항목으로 인식했다. 실제 수집 전에 생성 화면에서 target summary가 `Linux · arm64`인지 다시 확인한다. 태그만 입력하면 이후 다른 image가 들어올 수 있다.
+승인된 OCI 입력 방식에서 OS `Linux`, arch `arm64`를 명시하고 [BOM](04-import-bom.md)의 full `image@sha256:digest` platform manifest ref를 그대로 입력한다. 실제 수집 전에 생성 결과의 target summary가 `Linux · arm64`인지 다시 확인한다. 태그만 입력하면 이후 다른 image가 들어올 수 있다.
 
 복사 가능한 목록:
 
 - 필수: `manifests/quarantine-oci-required.txt`
 - 조건부: `manifests/quarantine-oci-conditional.txt`
+- 현행 성공 유지 후보: `manifests/quarantine-oci-successful.txt`
+- 대형 OCI 수동 반입: `manifests/manual-oci-import.txt`
+- repository 소스코드 전용 회차: `manifests/quarantine-repository-sources.tsv`
+
+최초 신청 정본은 계속 OCI 4개다. 처리 결과가 일부 성공했다고 `quarantine-oci-required.txt`에서 실패 항목을 삭제하지 않는다. 성공한 eugr·LiteLLM image는 기존 payload를 그대로 유지하고, 두 GLM image는 수동 반입 목록으로 분리하고 포털 재시도 회차를 만들지 않는다. 성공 OCI에 검역 이상이 있으면 보안 조치·예외 승인 전에는 매체 기록을 완료하지 않는다.
 
 검증할 항목:
 
@@ -116,7 +120,7 @@ Docker 또는 Crane 탭에서 OS `Linux`, arch `arm64`를 선택하고 [BOM](04-
 
 eugr 4개 파일은 recipe 파싱·peer 확인·2노드 컨테이너 실행에 직접 필요하다. GLM top-k patch는 장문 실행 완화에 필요하고, PyYAML wheel은 외부 `pip` 접근을 없앤다. 이 최소 파일은 실행 payload이므로 포털 검사 대상이다.
 
-전체 GitHub repository archive는 포털에 입력하지 않는다. 설계·출처·재빌드 참고자료는 [외부 repository 참고자료 제출안](12-external-repository-reference-submission.md)과 `manifests/external-repository-references.tsv`로 분리한다. 자체 작성 문서·스크립트가 들어 있는 이 repository도 그 외부 참고자료 bundle과 합치지 않고 반입 시점의 공개 commit을 별도 제출한다.
+전체 GitHub repository archive는 소스코드 전용 포털 회차에 입력한다. 설계·출처·재빌드 참고자료는 [외부 repository 참고자료 제출안](12-external-repository-reference-submission.md)과 `manifests/external-repository-references.tsv`로 분리한다. 자체 작성 문서·스크립트가 들어 있는 이 repository는 같은 소스코드 회차의 S-01로 제출하되 외부 upstream과 별도 행·provenance를 유지한다.
 
 ## 7. 매체 작성
 
@@ -149,6 +153,6 @@ eugr 4개 파일은 recipe 파싱·peer 확인·2노드 컨테이너 실행에 �
 
 M-02는 포털 항목이 아니라 별도 모델 신청 항목이며 [D-013](00-assumptions-and-decisions.md)에 따른 명시적 예외다. 신청 license는 MIT로 기재하되 자동 추정으로 기록하지 않고, checkpoint 미표기에 따른 `license_declared=NOASSERTION`과 원본 Z.AI MIT 및 2026-09-03 사용자 결정에 따른 `license_concluded=MIT`를 증빙에서 분리한다.
 
-RAW 행의 실제 필드는 `URL`, `이름`, `버전`, `용도`, `라이선스`다. 버전과 라이선스는 비울 수 있지만 라이선스 공란은 `UNKNOWN`으로 처리된다. 회차 공통의 `반입 목적`은 최상위 항목과 하위 종속성에 상속된다. 완성된 신청 단위와 상태 전이는 [검역 포털 절차](08-quarantine-portal.md)를 따른다.
+RAW 행에는 최소한 고정 URL, 이름, 버전, 용도와 license 판단을 제공한다. 필수 여부와 공란 처리 방식은 제출 시 승인된 양식에서 확인한다. 공개 절차는 [검역 포털 절차](08-quarantine-portal.md)를 따르며 제품별 상태 전이와 실제 실행 결과는 비공개 기록에서 관리한다.
 
 DS4F·GLM target·DFlash2 drafter의 URL, shard, config, tokenizer 또는 분할 part는 RAW로 입력하지 않는다. 모델에는 소형 예외를 두지 않는다. GitHub repository archive도 RAW로 우회 등록하지 않는다.
