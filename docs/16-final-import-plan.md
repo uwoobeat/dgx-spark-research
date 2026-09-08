@@ -1,10 +1,10 @@
 # 최종 반입 구성
 
-결정일: 2026-09-08 (D-017). 최종 산출물은 코드·wheel 회차, 레포지터리 소스코드 회차, 모델·모든 실행 OCI의 수동 반입 목록이다. 포털 회차에는 Docker 이미지를 넣지 않는다. 원본 종속성 명칭을 보존한다.
+결정일: 2026-09-08 (D-018). 최종 산출물은 코드·wheel 회차, 레포지터리 소스코드 회차, 모델·모든 실행 OCI의 수동 반입 목록이다. 포털 회차에는 Docker 이미지를 넣지 않는다. 원본 종속성 명칭을 보존한다.
 
 | 구분 | 유형·건수 | 다운로드/수집 소스 | 입력 목록 |
 |---|---|---|---|
-| 회차 A: 스크립트 코드·wheel | 스크립트 5개 + ARM64 PyYAML wheel 1개 | 고정 원본 URL, 포털 RAW 수집 | [RAW 6건](../manifests/quarantine-raw-sources.tsv) |
+| 회차 A: 스크립트 코드·wheel | 스크립트 5개 + ARM64 PyYAML wheel 1개 + Python DEB 40개 | 고정 원본 URL, 포털 RAW 수집 | [코드·wheel 6건](../manifests/quarantine-raw-sources.tsv) + [DEB 40건](../manifests/quarantine-python-debs.tsv) |
 | 회차 B: 소스코드 전용 | 외부 E-01~E-07 + 자체 S-01, commit ZIP 8개 | GitHub 고정 commit archive URL, 포털에서 수집 | [소스코드 회차 입력](../manifests/quarantine-repository-sources.tsv) |
 | 수동 반입 | 모델 snapshot 3개 + ARM64 OCI 4개 | Hugging Face 고정 revision / Docker Hub·GHCR platform digest | [수동 다운로드 목록](manual-import-source-links.txt) |
 

@@ -207,4 +207,4 @@ if [[ -f "$external_web" ]]; then
 fi
 
 python3 "$repo_root/scripts/validate-final-import-plan.py"
-printf 'import routing verified: code round has 6 RAW and zero OCI; source round has 8 repositories; manual import has 3 models + 4 OCI; %d web references deferred\n' "$web_count"
+printf 'import routing verified: code round has 6 script/wheel RAW + 40 Python DEB RAW and zero OCI; source round has 8 repositories; manual import has 3 models + 4 OCI; %d web references deferred\n' "$web_count"

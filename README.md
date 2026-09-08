@@ -42,14 +42,14 @@ DS4F NVFP4는 별도 파일럿 범위이므로 본 반입·배포안에서 제�
 | 구분 | 처리 |
 |---|---|
 | 모델 3종 | 크기와 무관하게 포털/OCI 제외, 별도 모델 반입 신청 |
-| 스크립트 5개 + PyYAML wheel 1개 | 코드·wheel 전용 회차 |
+| 스크립트 5개 + PyYAML wheel 1개 + Python ARM64 DEB 40개 | 코드·wheel 전용 회차 |
 | vLLM 3개 + LiteLLM OCI 1개 | 포털 밖 수동 반입, digest·ARM64·실물 검사·SHA-256 확인 |
 | 외부 GitHub repository 7개 + 자체 repository 1개 | 고정 commit 소스코드 전용 포털 회차(8건) |
 | 이 저장소가 작성한 runbook·script·profile·config | 폐쇄망 SSH 설치·운영 하네스로 유지하며 upstream 참고자료와 provenance를 섞지 않음 |
 
 포털 목록, 모델 신청 목록, 외부 참고자료 문서와 본 저장소 산출물은 서로를 대신하지 않는다. 특히 GitHub repository에 대해 OCI용 SBOM이 생성될 것이라고 가정하지 않는다.
 
-2026-09-08 D-017에 따라 포털은 코드·wheel 6건과 repository 소스 8건의 두 회차다. 모든 실행 OCI 4개와 모델 3개는 수동 반입한다. OCI의 기존 CVE 검토는 유지하며 새 수동 payload의 검증·승인을 별도로 확인한다.
+2026-09-08 D-018에 따라 포털은 코드·패키지 46건과 repository 소스 8건의 두 회차다. 모든 실행 OCI 4개와 모델 3개는 수동 반입한다. OCI의 기존 CVE 검토는 유지하며 새 수동 payload의 검증·승인을 별도로 확인한다.
 
 복사·제출용 산출물은 [최종 반입 구성](docs/16-final-import-plan.md), [수동 다운로드 목록](docs/manual-import-source-links.txt), [소스코드 회차 입력 목록](manifests/quarantine-repository-sources.tsv)을 사용한다.
 
@@ -112,3 +112,7 @@ chmod 600 configs/cluster.env state/dgx1.node.env state/dgx2.node.env
 6. 개별 검역할 eugr launcher·GLM patch·PyYAML 파일의 checksum/SBOM과, 소스코드 전용 포털 회차로 제출할 upstream·자체 repository 묶음
 
 조직 승인 반입 포털의 URL과 계정은 `QUARANTINE_*` 변수로 Git에서 제외된 로컬 `.env`에만 저장한다. 이 저장소에는 실제 접속정보가 포함되지 않는다.
+
+Python·pip 미설치 가정의 추가 반입과 OS 호환성 gate는 [Python ARM64 반입](docs/17-python-arm64-import.md)을 따른다. 3.12는 현재 선택한 호환 버전이며 사용자 고정 요구가 아니다.
+
+Python DEB 40개의 라이선스 요약·copyright 근거와 남은 승인 범위는 [라이선스 검토](docs/18-python-license-review.md)에 정리했다.

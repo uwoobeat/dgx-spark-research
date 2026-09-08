@@ -4,7 +4,7 @@
 
 ## 원칙
 
-인터넷 연결 staging과 폐쇄망 설치를 분리한다. 포털은 코드·wheel 6건 회차와 repository 소스 8건 회차만 사용한다. 모든 OCI와 모델은 수동 반입하며 버전·digest를 고정한다.
+인터넷 연결 staging과 폐쇄망 설치를 분리한다. 포털은 코드·패키지 46건 회차와 repository 소스 8건 회차만 사용한다. 모든 OCI와 모델은 수동 반입하며 버전·digest를 고정한다.
 
 노선: 원본 코드·wheel → 포털 회차 A / GitHub source ZIP → 포털 회차 B / 모델·모든 OCI → 수동 수집·검사·승인 → 매체 검증.
 
@@ -13,7 +13,7 @@
 
 포털 URL과 계정은 저장소의 `.env`에 `QUARANTINE_*` 변수로만 두고 파일 모드는 `0600`으로 유지한다. `.env`는 `.gitignore` 대상이며 Git, 문서, 화면 캡처, shell history에 값을 복사하지 않는다. placeholder만 있는 `.env.example`만 공유한다.
 
-CLI로 로그인·신청을 자동화하지 않는다. 포털은 코드·wheel RAW 6건과 repository RAW 8건을 두 회차로 분리하며 OCI가 없는지 생성 전후 확인한다. 모델 3개와 OCI 4개는 별도 수동 반입 경로이며, 제출·재시도·상태 변경은 목적, license와 manifest를 검토한 뒤 승인된 절차로 수행한다. 실제 회차 식별자·시각·상태와 처리 이력은 `state/` 또는 조직이 지정한 비공개 기록에만 둔다.
+CLI로 로그인·신청을 자동화하지 않는다. 포털은 코드·패키지 RAW 46건과 repository RAW 8건을 두 회차로 분리하며 OCI가 없는지 생성 전후 확인한다. 모델 3개와 OCI 4개는 별도 수동 반입 경로이며, 제출·재시도·상태 변경은 목적, license와 manifest를 검토한 뒤 승인된 절차로 수행한다. 실제 회차 식별자·시각·상태와 처리 이력은 `state/` 또는 조직이 지정한 비공개 기록에만 둔다.
 
 ## 2. upstream identity 재확인
 
@@ -81,7 +81,7 @@ DS4F, GLM target, DFlash2 drafter 세 모델은 크기와 무관하게 포털에
 
 ## 6. 실행 필수 RAW와 외부 repository 참고자료
 
-포털 RAW에는 [정본 목록](../manifests/quarantine-raw-sources.tsv)의 6개 행만 입력한다. GitHub 파일 URL은 `raw.githubusercontent.com/<owner>/<repo>/<40자리 commit>/<path>`로 고정하며, 이름·버전·한글 목적·license를 함께 복사한다. 수집 결과의 bytes와 SHA-256이 manifest와 다르면 반입을 중지한다.
+포털 코드·패키지 RAW에는 [코드·wheel](../manifests/quarantine-raw-sources.tsv) 6개와 [Python DEB](../manifests/quarantine-python-debs.tsv) 40개를 함께 입력한다. GitHub 파일 URL은 `raw.githubusercontent.com/<owner>/<repo>/<40자리 commit>/<path>`로 고정하며, 이름·버전·한글 목적·license를 함께 복사한다. 수집 결과의 bytes와 SHA-256이 manifest와 다르면 반입을 중지한다.
 
 eugr 4개 파일은 recipe 파싱·peer 확인·2노드 컨테이너 실행에 직접 필요하다. GLM top-k patch는 장문 실행 완화에 필요하고, PyYAML wheel은 외부 `pip` 접근을 없앤다. 이 최소 파일은 실행 payload이므로 포털 검사 대상이다.
 

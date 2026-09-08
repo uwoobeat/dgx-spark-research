@@ -44,6 +44,35 @@ for row in rows("quarantine-raw-sources.tsv"):
     require(row["name"] == row["url"].rsplit("/", 1)[-1],
             "RAW display name must preserve original filename")
 manual = set(refs("manual-oci-import.txt"))
+debs = rows("quarantine-python-debs.tsv")
+reviews = rows("python-deb-license-review.tsv")
+require(len(reviews) == 40 and len({r['name'] for r in reviews}) == 40,
+        "Python license review must cover 40 packages")
+review_by_name = {r['name']: r for r in reviews}
+require(len(debs) == 40 and len({r["name"] for r in debs}) == 40,
+        "Python ARM64 closure must contain 40 distinct packages")
+require({"python3", "python3.12", "python3-pip"} <= {r["name"] for r in debs},
+        "Python runtime/pip roots missing")
+for row in debs:
+    review = review_by_name.get(row['name'], {})
+    require(review.get('version') == row['version'] and
+            review.get('artifact_sha256') == row['sha256'] and
+            review.get('license_summary') == row['license'] and
+            row['license'] != 'NOASSERTION', 'DEB license review identity/summary mismatch')
+    require(review.get('copyright_package') in review_by_name and
+            review.get('copyright_path', '').startswith('/usr/share/doc/') and
+            re.fullmatch(r'[0-9a-f]{64}', review.get('copyright_sha256', '')) is not None,
+            'missing DEB copyright provenance')
+    require(review.get('review_status') == 'copyright-reviewed-binary-scope-pending'
+            and review.get('license_concluded') == 'NOASSERTION',
+            'copyright summary must not imply final legal approval')
+    require(row["architecture"] in ("arm64", "all") and
+            row["url"].startswith("https://ports.ubuntu.com/ubuntu-ports/pool/") and
+            row["url"].endswith("_" + row["architecture"] + ".deb"), "invalid DEB architecture/source")
+    require(re.fullmatch(r"[0-9a-f]{64}", row["sha256"]) is not None
+            and 0 < int(row["bytes"]) < 5000000000, "invalid DEB integrity metadata")
+    require(row["import_route"] == "quarantine-code-round" and row["version"]
+            and row["license"], "invalid DEB route/version/license")
 require(len(manual) == 4, "manual OCI list must contain all four required images")
 for name in ("quarantine-oci-required.txt", "quarantine-oci-successful.txt",
              "quarantine-oci-conditional.txt", "quarantine-oci-retry.txt"):

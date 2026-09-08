@@ -64,6 +64,8 @@ DS4F NVFP4 checkpoint, Anemll runtime, 관련 playbook은 별도 파일럿 범�
 | 기능/command | Ubuntu package 계열 | 처리 |
 |---|---|---|
 | `bash` | `bash` | 필수 shell; 없을 가능성은 낮지만 version 기록 |
+| `python3` (CPython 3.12 ARM64) | `python3`, `python3.12`, minimal·stdlib 및 전이 의존성 | 기존 반입 Python 3.12의 ARM64 여부 미확인. 장비에 없으면 동일 DGX OS용 ARM64/all `.deb` closure 반입 |
+| `python3 -m pip` | `python3-pip` 및 전이 의존성 | local PyYAML wheel 설치에 필요. 사전 설치 미보장, 없으면 코드·패키지 회차 보완 |
 | `awk`, `sed`, `grep` | `mawk` 또는 `gawk`, `sed`, `grep` | manifest와 report 처리 |
 | `find`, `xargs` | `findutils` | payload tree 처리 |
 | `sort`, `sha256sum`, `split`, `stat`, `readlink` | `coreutils` | checksum·매체 제약 시 분할·경로 검증 |
@@ -82,9 +84,11 @@ DS4F NVFP4 checkpoint, Anemll runtime, 관련 playbook은 별도 파일럿 범�
 
 ## E. 검역 포털 신청 항목
 
-2026-09-08 D-017 이후 포털은 코드·wheel 6건 회차와 repository 소스코드 8건 회차만 사용한다. 모든 OCI 4개는 모델 3개와 함께 수동 반입한다.
+Python·pip는 D-018에 따라 미설치를 가정하고 조건부에서 **선제 반입 필수 항목**으로 승격했다. Ubuntu 24.04 ARM64/all DEB 40개는 [고정 manifest](../manifests/quarantine-python-debs.tsv)와 [설치 gate](17-python-arm64-import.md)를 따른다. 다른 host utility의 조건부 판정은 유지한다.
 
-포털 입력은 코드·wheel RAW 6건과 repository RAW 8건을 서로 다른 회차로 제출한다. 두 회차 모두 RAW만 포함하며 OCI 입력은 없어야 한다. 최종 수집·scan·license·승인 결과는 Git에서 제외된 비공개 실행 기록에 보존한다.
+2026-09-08 D-018 이후 포털은 코드·패키지 46건 회차와 repository 소스코드 8건 회차만 사용한다. 모든 OCI 4개는 모델 3개와 함께 수동 반입한다.
+
+포털 입력은 코드·패키지 RAW 46건과 repository RAW 8건을 서로 다른 회차로 제출한다. 두 회차 모두 RAW만 포함하며 OCI 입력은 없어야 한다. 최종 수집·scan·license·승인 결과는 Git에서 제외된 비공개 실행 기록에 보존한다.
 
 - OCI는 포털에 입력하지 않는다. 수동 수집 시 `image@sha256:digest` 형태로 ARM64 platform manifest를 지정한다.
 - RAW: 외부 URL, 이름, 버전, 목적, license를 기록하며 각 파일은 승인된 포털 제한을 충족해야 한다.
@@ -96,11 +100,11 @@ DS4F, GLM target, DFlash2 drafter 세 snapshot은 크기와 관계없이 포털�
 
 ### 현행 처리 분류
 
-최초 OCI 4 + RAW 6의 수집 결과는 이력이다. 현행 경로는 D-017을 따르며 실제 회차 정보는 비공개 운영 기록에 보존한다.
+최초 OCI 4 + RAW 6의 수집 결과는 이력이다. 현행 경로는 D-018을 따르며 실제 회차 정보는 비공개 운영 기록에 보존한다.
 
 | 분류 | 대상 | 다음 처리 |
 |---|---|---|
-| 코드·wheel 회차 | 스크립트 5개와 PyYAML wheel 1개 | RAW 6건만 신청하며 원본명을 보존. OCI는 포함하지 않음 |
+| 코드·wheel 회차 | 스크립트 5개·PyYAML wheel 1개·Python DEB 40개 | RAW 46건만 신청하며 원본명을 보존. OCI는 포함하지 않음 |
 | 수동 OCI 반입 | eugr B12X, LiteLLM, GLM `sm121-v11-dflash2`, GLM `sm121-v8` | [수동 OCI 목록](../manifests/manual-oci-import.txt)으로 포털 밖 수동 신청. 동일 digest와 `linux/arm64` target을 재확인하고 모델 미포함 실물 검사를 반복 |
 | 별도 모델 신청 | M-01 DS4F base, M-02 GLM NVFP4, M-03 DFlash2 drafter | [모델별 신청서](10-separate-model-import-application.md)와 source inventory로 각각 한 행씩 신청. 포털 OCI/RAW에 섞지 않음 |
 

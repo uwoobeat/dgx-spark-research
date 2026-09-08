@@ -88,7 +88,7 @@
 - 반입 BOM에는 이름, 정확한 버전/commit, 아키텍처, 원본 URL/registry, 파일명, 크기, SHA-256, 라이선스, 의존 대상, 사용 목적, 필수/선택 구분을 둔다.
 - OCI 이미지는 폐쇄망에서 load 가능한 archive로 준비하고, 모델은 remote code를 포함한 완전한 snapshot manifest로 고정한다.
 - 모델 snapshot은 크기와 무관하게 조직 승인 반입 포털에 등록하거나 OCI image에 포함하지 않는다. DS4F, GLM target, DFlash2 drafter를 모델별 한 행으로 별도 모델 반입 신청서에 기재하고, 파일별 source inventory와 실제 payload SHA-256 manifest를 첨부한다.
-- 포털 회차는 스크립트 코드·wheel 6건과 repository 소스코드 8건의 두 개로 분리한다. vLLM·LiteLLM을 포함한 모든 Docker/OCI image와 LLM 모델은 수동 반입한다. 포털에 image reference나 image archive를 입력하지 않는다.
+- 포털 회차는 스크립트 코드·패키지 46건과 repository 소스코드 8건의 두 개로 분리한다. vLLM·LiteLLM을 포함한 모든 Docker/OCI image와 LLM 모델은 수동 반입한다. 포털에 image reference나 image archive를 입력하지 않는다.
 - GitHub 등 외부 repository와 자체 repository는 고정 commit archive로 소스코드 전용 포털 회차에 신청한다. 기존 이미지·코드 회차와 혼합하지 않는다. 외부 원문과 자체 작성 자산의 provenance 및 승인 증빙은 항목별로 구분한다.
 - Python 패키지는 전이 의존성을 포함한 ARM64 wheelhouse를 준비한다. wheel이 없어 소스 빌드가 필요하면 compiler/toolchain과 소스 tarball도 BOM에 포함한다.
 - 허용된 물리 매체의 용량과 파일 크기를 고려해 매체 분할 계획, 매체별 manifest, 전체/개별 체크섬 검증 절차를 제공한다.

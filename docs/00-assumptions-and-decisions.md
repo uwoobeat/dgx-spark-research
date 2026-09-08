@@ -97,6 +97,10 @@ D-015의 기존 회차 유지 부분을 대체한다. 사용자의 후속 요청
 
 D-015/D-016의 OCI 회차 포함 부분을 대체한다. DS4F vLLM(eugr B12X), GLM vLLM 2종, LiteLLM의 필수 ARM64 실행 image 4개를 모두 수동 반입한다. 기존 이미지 포함 회차는 삭제하고 스크립트 5개·wheel 1개의 코드 회차로 재생성한다. repository 소스코드 8건 회차는 유지한다. 최종 포털 회차는 RAW 코드 6건과 source ZIP 8건의 두 개이며, 수동 반입은 모델 3개와 OCI 4개다. 조건부 OCI도 채택 시 수동 경로만 허용한다. 이전 성공 이력은 신규 수동 반입의 검사·승인을 대체하지 않는다.
 
+### D-018: Python ARM64 미설치 가정의 선제 반입 (2026-09-08)
+
+사용자 지시로 Python·pip 및 기존 ARM64 자산이 없다고 가정한다. 버전 3.12는 필수 요구가 아니지만 Ubuntu 24.04와 기존 cp312 PyYAML wheel에 맞춰 이번 수집은 3.12를 유지한다. Ubuntu Ports signed index를 사용해 빈 dpkg status 기준 Depends/Pre-Depends를 해결하고 ARM64/all DEB 40개를 수집·hash 고정했다. 코드·wheel 6건 회차를 DEB 포함 RAW 46건으로 대체하고 repository 8건 회차는 유지한다. OCI 4개·모델 3개는 계속 수동 반입한다. 실제 DGX OS와 기본 library의 호환성·license 승인은 설치 전 gate다. [세부 절차](17-python-arm64-import.md)를 따른다.
+
 ## 미확정·승인 전 질문
 
 | ID | 질문 | 영향 | 해소 방법 |

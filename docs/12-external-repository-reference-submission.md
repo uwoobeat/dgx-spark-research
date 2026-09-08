@@ -8,7 +8,7 @@
 
 다음 세 묶음과 명확히 분리한다.
 
-- 코드·wheel 전용 포털 회차: 실행 필수 개별 파일 5개, PyYAML wheel 1개
+- 코드·wheel 전용 포털 회차: 실행 필수 개별 파일 5개, PyYAML wheel 1개, Python ARM64 DEB 40개
 - 수동 반입: DS4F, GLM target, DFlash2 drafter snapshot 각 1행과 모든 실행 OCI 4개
 - 자체 작성 repository: 소스코드 회차 S-01; 외부 E-ID와 별도 행으로 식별하고 소스·license를 합치지 않음
 

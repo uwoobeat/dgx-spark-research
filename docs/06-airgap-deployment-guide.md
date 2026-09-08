@@ -191,6 +191,8 @@ sudo chmod 0755 /opt/approved/eugr-launcher/run-recipe.sh \
 ```bash
 python3 -VV
 python3 -c 'import sys; assert sys.version_info[:2] == (3, 12), sys.version'
+python3 -c 'import sysconfig; assert "aarch64" in (sysconfig.get_config_var("SOABI") or ""), "ARM64 Python required"'
+python3 -m pip --version
 sudo install -d -m 0755 /opt/approved/eugr-python
 sudo python3 -m pip install --no-index --no-deps \
   --target /opt/approved/eugr-python \
@@ -199,6 +201,8 @@ PYTHONPATH=/opt/approved/eugr-python python3 -c 'import yaml; print(yaml.__versi
 ```
 
 승인 wheel은 CPython 3.12 ARM64용이다. 장비의 `python3` ABI가 3.12가 아니면 설치를 강행하지 말고, 같은 PyYAML version의 해당 `cp3XY` ARM64 wheel을 새로 식별·승인한다.
+
+Python 또는 pip 검사 실패 시 여기서 중단한다. [선제 반입한 Python ARM64 패키지의 설치 gate](17-python-arm64-import.md)에 따라 DGX OS 호환성을 확인한 뒤 필요한 `.deb`와 전이 의존성을 먼저 설치한다. 기존 x86용 Python 3.12를 대신 설치하거나 외부 `get-pip.py`를 실행하지 않는다. 다른 Python minor 버전 채택은 가능하지만 현재 cp312 wheel과 하네스 ABI 검증을 함께 변경해야 한다.
 
 폐쇄망에서는 `--setup`, `--build-only`, `--download-only`, `--apply-vllm-pr`를 사용하지 않는다. `build-and-copy.sh`와 `hf-download.sh`는 반입하지 않는다. custom recipe에는 모델 Hub ID가 없고 local path만 있으므로 외부 다운로드가 필요하지 않다.
 

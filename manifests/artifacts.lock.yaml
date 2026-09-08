@@ -199,3 +199,14 @@ host_wheels:
     role: required-for-eugr-recipe-parser
     import_route: quarantine-raw
     quarantine_registration: true
+host_python_debs:
+  distribution: ubuntu-24.04
+  architecture: arm64-and-all
+  roots: [python3, python3.12, python3-pip]
+  python_version: 3.12.3-1ubuntu0.16
+  pip_version: 24.0+dfsg-1ubuntu1.3
+  inventory: manifests/quarantine-python-debs.tsv
+  package_count: 40
+  import_route: quarantine-code-round
+  quarantine_registration: true
+  installation_gate: dgx-os-compatibility-and-license-review
